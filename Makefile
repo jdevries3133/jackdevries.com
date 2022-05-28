@@ -37,6 +37,7 @@ wait:
 		[ $$? == 0 ] && break; \
 		sleep 1; \
 		echo "awaiting server readiness"; \
+		ls app; \
 		docker-compose logs; \
 	done
 
