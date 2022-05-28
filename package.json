@@ -9,7 +9,7 @@
     "dev": "yarn prisma:deploy && concurrently \"PORT=8000 remix dev\" \"yarn build:tailwind --watch\"",
     "debug": "node --inspect-brk=0.0.0.0 ./node_modules/.bin/remix dev",
     "production": "yarn prisma:deploy && PORT=8000 remix-serve build",
-    "build:all": "yarn build:tailwind && remix build && yarn prisma:generate",
+    "build:all": "yarn build:tailwind && yarn prisma:generate && remix build ",
     "build:tailwind": "npx tailwindcss -i styles/tailwind.css -o app/tailwind.css",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
