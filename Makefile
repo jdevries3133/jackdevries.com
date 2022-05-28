@@ -28,6 +28,7 @@ endif
 	yarn typecheck
 	yarn test run
 	make wait
+	yarn build:all
 	yarn cypress
 
 .PHONY: wait
