@@ -1,6 +1,9 @@
 services:
   web:
     build: .
+    ports:
+      # http server
+      - "8000:8000"
     links:
       - db
     environment:
