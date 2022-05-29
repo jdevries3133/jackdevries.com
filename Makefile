@@ -24,11 +24,11 @@ push:
 check:
 ifdef CI
 	docker-compose up -d
+	yarn build:all
 endif
 	yarn typecheck
 	yarn test run
 	make wait
-	yarn build:all
 	yarn cypress
 
 .PHONY: wait
