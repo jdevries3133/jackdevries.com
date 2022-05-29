@@ -35,7 +35,7 @@ wait:
 	@while true; do \
 		curl --silent --output /dev/null http://localhost:8000; \
 		[ $$? == 0 ] && break; \
-		sleep 1; \
+		sleep 5; \
 		echo "awaiting server readiness"; \
 		ls app; \
 		docker-compose logs; \
