@@ -1,0 +1,96 @@
+---
+title: Another Neovim Config
+description: An overview of my neovim config
+created: 2022-07-25
+---
+
+# Another Neovim Config
+
+I was recently motivated to cleanup my vim and neovim config, which included
+migrating most of the neovim configuration to lua, and installing some popular
+neovim packages that I hadn't had the chance to try yet. I originally started
+using neovim back in the 0.4 days before native LSP and all of its descendants
+came onto the scene.
+
+The goal of this post is to be a ramp that can onboard a developer with zero
+vim or neovim experience all the way up to the full neovim-as-an IDE experience
+that makes it practical for me to use neovim 100% of the time. As such, I'll be
+a bit opinionated as a means for providing some guard rails, but as always
+there is almost never a single "correct" learning sequence, and as long as you
+don't feel frustrated or confused, you're on the right path for you.
+
+I won't try to persuade you to learn (neo)vim, but I'll just say that using
+(neo)vim brings me immeasurable joy each day, and I hope that everyone can
+experience the mind-tool connection that it provides. There are a lot of false
+prophets of vim who say it will make you faster or give you some other
+superhuman benefits. Maybe it will, but if you're that smart of a developer
+that you can figure out how to do tasks faster, you probably could accomplish
+the same thing with JetBrains and bash scripts. At its best, using neovim, to
+me, feels like playing a musical instrument. It elicits a flow state and drives
+my focus through the day, but most of all, it just makes me happy.
+
+To that end, I hope that this guide helps you join me.
+
+## `vim` vs `neovim`
+
+This guide will share
+[configurations for vim](https://github.com/jdevries3133/vim_config)
+as well as
+[configurations for neovim.](https://github.com/jdevries3133/nvim_config)
+As a newcomer, which editor to use, which plugins to choose, and the overall
+path from zero to hero are muddy waters. At a user level, neovim is almost 100%
+compatible with vim for all intents and purposes. Certain plugins might be
+either incompatible or not in vogue in a particular community, but the overall
+user experience _before_ plugins is comparable.
+
+However, neovim has applied massive architectural changes compared to vim, and
+neovim has added the lua scripting language as a successor to vim script.
+Neovim is also a community-led open source project, whereas vim follows the
+so-called "Benevolent Dictator for Life" model, where vim's founder Bram
+Moolenaar makes final decisions about the future of the project, for
+[better or worse.](https://news.ycombinator.com/item?id=29758549)
+
+In any case, neovim's architectural improvements combined with lua as a
+first-class scripting language have made extremely sophisticated plugins
+easier to develop than ever, and the community is bustling to say the least. At
+this point, popular neovim plugins are polished, consistent, and extremely
+performant. Not only that, but since they're all implemented in neovim-flavored
+lua, they provide APIs for extension, which means that plugin authors can
+collaborate and rely on each others' plugins. It's truly the best of the open
+source ecosystem at work.
+
+I don't want to give plain old vim the cold shoulder, though. One of the
+delightful things about going down the (neo)vim learning journey is that you
+apparently never stop finding features that are both surprising and delightful,
+and in my experience, a lot of these nuggets of gold exist in or are inherited
+from vim. For example:
+
+- Did you know that `g?<motion>` will rot13 encode text?
+- Did you know that `gu<motion>` and `gU<motion>`, can convert
+  text to lowercase or uppercase, respectively?
+- Did you know you can open and edit a remote file without leaving vim with `:e
+  scp://<user>@<host>//absolute/path/to/file.txt`
+- Did you know that you can yank (`y`), change (`c`), or delete (`d`) text
+  inside curly braces, parenthesis, or square braces with key sequences like:
+  - `di{`: delete inside curly braces
+  - `ci(`: change inside parenthesis
+  - `yi[`: yank inside square brackets
+
+That is a random smattering of functionality, but the idea that there are so
+many random fun things like this to learn, and that they are available on every
+Unix-like terminal you touch is the legacy of vim (and vi that came before).
+I definitely don't sleep on plain-old vim.
+
+Going forward, my vim config aims to be minimal and portable. There are some
+plugins, but there is also a single fully-portable config file that can be
+scp'd over to any remote machine to quickly bring a base-level of comfort. My
+neovim config, on the other hand, has all the bells and whistles: fuzzy finder,
+live grep, integrated debugger, language support, dynamically inlined lint
+errors, intelligent syntax highlighting and folding, and more.
+
+## How to Transition to (neo)vim
+
+Again, there's clearly not a right or wrong way, but I think that it's
+important to pace yourself and to avoid making choices that lead you towards a
+huge dent in productivity all at once. Learning to do everything that you do as
+a developer while keeping your fingers on the home row is quite an adjustment,
