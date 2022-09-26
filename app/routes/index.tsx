@@ -1,4 +1,4 @@
-import { MetaFunction } from "@remix-run/react/routeModules";
+import { MetaFunction } from "@remix-run/node";
 
 import { HeroSection } from "~/components/heroSection";
 import { ActionFunction, useActionData } from "remix";
