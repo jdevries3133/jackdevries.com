@@ -1,12 +1,17 @@
+export const DOMAIN =
+  process.env.NODE_ENV === "production" ? "jackdevries.com" : "localhost";
 export const BASE_URL =
   process.env.NODE_ENV === "production"
     ? "https://jackdevries.com"
     : "http://localhost:8000";
 
-export const HOMEPAGE_LAST_UPDATED = "2022-05-21t08:36:31-04:00";
+const _secret = process.env.SECRET_KEY;
+if (!_secret) {
+  throw new Error("missing required environment variable SECRET_KEY");
+}
+export const SECRET_KEY: string = _secret;
 
-// in seconds
-export const COOKIE_TIMEOUT =
+export const COOKIE_TIMEOUT = // one year
   60 * // seconds
   60 * // minutes
   24 * // hours
