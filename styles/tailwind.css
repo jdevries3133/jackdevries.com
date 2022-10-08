@@ -28,7 +28,7 @@
 }
 
 .prose a {
-  @apply rounded focus:ring-2 focus:ring-accent-300 outline-none;
+  @apply rounded focus:ring-2 focus:ring-primary-300 outline-none;
 }
 
 /* tailwind puts backticks around inline <code> tags. This removes them */
