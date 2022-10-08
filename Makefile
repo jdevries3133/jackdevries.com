@@ -8,6 +8,7 @@ PREV_TAG=$(shell git describe --tags $(git rev-list --parents -n 1 HEAD) | tail 
 
 # assuming the use of Docker hub, these constants need not be changed
 CONTAINER=$(DOCKER_ACCOUNT)/$(CONTAINER_NAME):$(TAG)
+export IMAGE=$(CONTAINER)
 
 
 .PHONY: deploy
@@ -37,7 +38,7 @@ debug:
 		-f docker-compose.yml \
 		-f docker-compose.dev.yml \
 		-f docker-compose.debug.yml \
-		up -d
+		up -d --build
 
 
 .PHONY: fmt
@@ -58,6 +59,7 @@ endif
 	yarn typecheck
 	yarn test run
 ifdef CI
+	docker-compose pull
 	docker-compose up -d
 endif
 	make wait
