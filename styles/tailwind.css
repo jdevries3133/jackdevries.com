@@ -23,6 +23,10 @@
   }
 }
 
+.prose {
+  @apply max-w-xl;
+}
+
 .prose p code {
   @apply font-bold;
 }

@@ -1,0 +1,223 @@
+---
+title: Understanding `string.replace` in JavaScript
+description: It's behavior is kind of weird!
+created: 2022-10-12
+---
+
+import { CodeSample } from '../components/codeSample.tsx';
+
+# Understanding `string.replace` in JavaScript
+
+Finding and replacing with capture groups is super useful. I do it all the time
+in vim using sed syntax. Here's an example!
+
+## Scenario
+
+Oh no, we're migrating to a new email provider, and they don't support the
+`+custom` thing ([more one the email `+`
+trick](https://www.cnet.com/tech/services-and-software/6-clever-gmail-tricks-to-minimize-regret-frustration-and-spam/))
+
+Input
+
+```text
+admin@mydomain.com
+engineering+custom@mydomain.com
+```
+
+Vim / Sed Regex; _horribly cryptic, as usual_:
+
+```text
+%s/\(\w\+\)\(+\w\+\)\?@\(.*\)/\1@newdomain.com
+```
+
+Output:
+
+```text
+admin@newdomain.com
+engineering@newdomain.com
+```
+
+This is all very fine and good. Using capture groups allowed us to separately
+capture the base email from the `+custom` bit, then to lift that out of
+the replace expression so that we can do our whole transformation in one go.
+
+How can you embrace this magic in JavaScript, though; it seems like something
+that would be useful for string manipulation!
+
+## Using Capture Group Replacement in JavaScript
+
+The gist of the API in javascript is that you can use `$1`, `$2`, etc. to refer
+to to captured groups just like you can use `\1`, `\2`, etc. in vim or sed.
+
+Unlike vim or sed, I was really surprised by this behavior:
+
+<CodeSample>
+```javascript
+'input string'.replace(/(input)/, '$1') // 'input string'
+```
+</CodeSample>
+
+<p className="
+  font-extrabold
+  text-xl
+  text-transparent
+  bg-clip-text
+  bg-gradient-to-tr
+  from-primary-500
+  to-secondary-500
+">JavaScript, whyyy do you do this?</p>
+
+It turns out that with a partial match, finding and replacement only affects
+the text for which it matched. So, we cannot touch the `' string'` substring at
+all with the find and replace syntax here, since it wasn't captured by the
+regular expression. In practice, that means we need at least two capture groups
+to do anything useful.
+
+<CodeSample>
+```javascript
+'input string'.replace(/(input) (string)/, '$1') // 'input'
+```
+</CodeSample>
+
+We were able to remove `' string'` from the output because `$1` now only
+captures `input`, but doesn't capture anything else.
+
+We can use this pattern to do something sort of practical, actually.
+
+<CodeSample>
+```javascript
+names = ["John Smith", "Mary Jane", "Tim Peters"]
+names.map((name) => name.replace(/(\w+) (\w+)/, '$2, $1'))
+// => [ 'Smith, John', 'Jane, Mary', 'Peters, Tim' ]
+```
+</CodeSample>
+
+The key here is that the whole string matches the whole regex. If the string
+doesn't match the regex at all, it doesn't matter what we put in the replace
+expression, the original input is passed through unaffected. 
+
+<CodeSample>
+```javascript
+"can't touch this".replace(/no match/, '$1')  
+// => "can't touch this"
+
+"can't touch this".replace(/no match/, '$2')  // "can't touch this"
+// => "can't touch this"
+
+"can't touch this".replace(/no match/, 'hello??')  
+// => you guessed it; still "can't touch this"
+```
+</CodeSample>
+
+The weird thing is that for a partial match, the bit that doesn't match gets
+passed through, while you can transform the part that _does_ match. This
+highlights the weirdness. First, let's breakdown the regex I'm going to use:
+
+```text
+/(\w+)@(\w+)\.(\w{3})/
+```
+
+In plain language, this is:
+
+- A group of one or more letters (`$1`)
+- An "`@`"
+- A group of one or more letters (`$2`)
+- A "`.`"
+- A group of exactly 3 letters (`$3`)
+
+As you might have started to recognize, this is an email regex. But, there's a
+problem. It supports top-level domains with 3 chracters (".com"), but not ones
+with two characters (".co"), which do exist! Therefore, we see the following:
+
+<CodeSample>
+```javascript
+// this is the same regex as before; don't bother reading it 😁
+const reg = /(\w+)@(\w+)\.(\w{3})/
+
+reg.test('hi@hi.com') // true
+reg.test('hi@hi.co')  // false
+```
+</CodeSample>
+
+With that in mind, let's look at examples that combine everything we've
+learned!
+
+<CodeSample>
+```javascript
+const reg = /(\w+)@(\w+)\.(\w{3})/g // still the same!
+
+// this is expected behavior; the regex matches exactly
+'email@domain.com'.replace(reg, '$1') // 'email' (as we'd expect)
+'email@domain.com'.replace(reg, '$2') // 'domain' (as we'd expect)
+'email@domain.com'.replace(reg, '$3') // 'com' (as we'd expect)
+
+// when the regex doesn't match the input is passed through! Just like the
+// "can't touch this" example from before
+'email@domain.co'.replace(reg, '$1')     // 'email@domain.co'
+'email@domain.co'.replace(reg, '$2')     // 'email@domain.co'
+'email@domain.co'.replace(reg, 'ahhhh')  // 'email@domain.co'
+```
+</CodeSample>
+
+Let's look at some partial matches now!
+
+<CodeSample>
+```javascript
+const reg = /(\w+)@(\w+)\.(\w{3})/g // still the same!
+
+const falseInformation = 'My email domain is email@domain.com'
+// uh, no, the domain is just "domain.com"; let's fix that with our regex!
+
+const fixed = falseInformation.replace(reg, '$2.$3')
+fixed === 'My email domain is domain.com' // true
+
+let challenge = `
+  For each of these emails, change the top-level domain from ".com" to ".gov"
+
+  - myemail@website.com
+  - theiremail@whatever.com
+  - whosemail@something.org
+  - thisemail@that.net
+`;
+
+// There are other ways to accomplish this without repetition; out of scope for
+// this tutorial
+challenge = challenge.replace(reg, '$1@$2.gov')
+challenge = challenge.replace(reg, '$1@$2.gov')
+challenge = challenge.replace(reg, '$1@$2.gov')
+challenge = challenge.replace(reg, '$1@$2.gov')
+```
+</CodeSample>
+
+So, basically, if we have an exact match, the behavior is pretty unsurprising.
+If we don't have a match, the whole string just gets passed through. If we have
+a partial match, javascript performs the transformation on the bit that
+matched, but doesn't touch the rest.
+
+Here are a few more examples.
+
+<CodeSample>
+```javascript
+'hello world'.replace(/(hell)(o)/, '$1') // 'hell world'
+```
+</CodeSample>
+
+And `$2` captures the `o`:
+
+<CodeSample>
+```javascript
+'hello world'.replace(/(hell)(o)/, '$2') // 'o'
+```
+</CodeSample>
+
+There are quite a few decent resources on the internet already, of course:
+
+- [mdn](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/n)
+- [stack overflow; "JavaScript replace method, replace with "$1""](https://stackoverflow.com/a/3235785)
+- [more detailed blog-style
+  guide](https://www.javascripttutorial.net/javascript-regex/replace/)
+
+Another important topic for understanding regex in JavaScript is regex modifier
+flags, which I've ignored to keep it simple here, but [mdn documents them very
+well](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#advanced_searching_with_flags)
+and I encourage you to experiment with them!
