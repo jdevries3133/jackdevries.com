@@ -6,7 +6,7 @@
   "scripts": {
     "cypress": "cypress run",
     "cypress:dev": "cypress open",
-    "dev": "yarn prisma:deploy && concurrently --names remix,tailwind \"PORT=8000 remix dev --sourcemap\" \"yarn build:tailwind --watch\"",
+    "dev": "concurrently --names remix,tailwind \"PORT=8000 remix dev --sourcemap\" \"yarn build:tailwind --watch\"",
     "debug": "node --inspect-brk=0.0.0.0 ./node_modules/.bin/remix dev --sourcemap",
     "production": "yarn prisma:deploy && PORT=8000 remix-serve build",
     "build:all": "yarn build:tailwind && yarn prisma:generate && remix build",
@@ -34,6 +34,7 @@
     "accept-language-parser": "^1.5.0",
     "concurrently": "^7.0.0",
     "fuse.js": "^6.6.2",
+    "highlight.js": "^11.6.0",
     "prisma": "^3.9.1",
     "react": "18",
     "react-dom": "18",

@@ -10,7 +10,11 @@ module.exports = {
   ignoredRouteFiles: [".*"],
   mdx: async () => ({
     rehypePlugins: [
-      (await import("rehype-highlight")).default,
+      [(await import("rehype-highlight")).default, {
+        languages: {
+          vim: (await import('highlight.js/lib/languages/vim')).default
+        }
+      }],
       (await import("rehype-slug")).default,
       (await import("rehype-autolink-headings")).default,
       (await import("rehype-toc")).default,
