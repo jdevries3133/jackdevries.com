@@ -13,7 +13,7 @@
     "build:tailwind": "tailwindcss -i styles/tailwind.css -o app/tailwind.css",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:deploy": "retry -n 3 -- prisma migrate deploy",
+    "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "postinstall": "remix setup node",
     "test": "vitest",
@@ -42,8 +42,7 @@
     "rehype-highlight": "^5.0.2",
     "rehype-slug": "^5.0.1",
     "rehype-toc": "^3.0.2",
-    "remix": "^1.7.2",
-    "retry-cli": "^0.7.0"
+    "remix": "^1.7.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.4.0",
