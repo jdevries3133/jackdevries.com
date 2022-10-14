@@ -74,7 +74,7 @@ export default function Post() {
         <div
           className="
           p-2
-          bg-clay-200
+          bg-primary-50
           shadow-xl
           rounded-t
           md:p-4

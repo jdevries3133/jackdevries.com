@@ -17,7 +17,14 @@ module.exports = {
       }],
       (await import("rehype-slug")).default,
       (await import("rehype-autolink-headings")).default,
-      (await import("rehype-toc")).default,
+      [(await import("rehype-toc")).default, {
+        headings: ['h2'],
+        cssClasses: {
+          toc: '',
+          list: 'flex flex-wrap m-4 border border-gray-200 rounded hover:bg-gray-100 gap-2 list-none',
+          listItem: ''
+        },
+      }],
     ],
   }),
 };

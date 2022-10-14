@@ -1,12 +1,12 @@
 module.exports = {
-  content: ["./app/**/*.ts(x)", "./app/**/*.mdx"],
+  content: ["./app/**/*.ts(x)", "./app/**/*.mdx", "./remix.config.js"],
   theme: {
     extend: {
       colors: {
         // color palatte: https://coolors.co/fcbd03-bec5ad-519872-3b5249-34252f
         primary: {
           DEFAULT: "#FCBD03",
-          50: "#FEEDB8",
+          50: "#fffdf7",
           100: "#FEE7A4",
           200: "#FDDD7C",
           300: "#FDD254",
