@@ -8,6 +8,7 @@ import * as vimMetaConcepts from "./vimMetaConcepts.mdx";
 import * as myNeovimConfig from "./myNeovimConfig.mdx";
 import * as jsFindReplace from "./jsFindReplace.mdx";
 import * as vimRipgrep from "./vimRipgrep.mdx";
+import * as vimRegex from "./vimRegex.mdx";
 
 /**
  * This is where posts can be published or unpublished. All posts in the array
@@ -15,6 +16,7 @@ import * as vimRipgrep from "./vimRipgrep.mdx";
  */
 export const allPosts = [
   vimRipgrep,
+  vimRegex,
   jsFindReplace,
   vimTutorial,
   vimMetaConcepts,
