@@ -2,6 +2,7 @@
 title: Understanding `string.replace` in JavaScript
 description: It's behavior is kind of weird!
 created: 2022-10-12
+thumbnail: /static/js.webp
 ---
 
 import { CodeSample } from '../components/codeSample.tsx';
@@ -42,14 +43,15 @@ capture the base email from the `+custom` bit, then to lift that out of
 the replace expression so that we can do our whole transformation in one go.
 
 How can you embrace this magic in JavaScript, though; it seems like something
-that would be useful for string manipulation!
+that would be useful for string manipulation in our applications!
 
-## Using Capture Group Replacement in JavaScript
+## Using Capture Groups for Substitution in JavaScript
 
 The gist of the API in javascript is that you can use `$1`, `$2`, etc. to refer
 to to captured groups just like you can use `\1`, `\2`, etc. in vim or sed.
 
-Unlike vim or sed, I was really surprised by this behavior:
+Although this makes sense by the end, I was really thrown for a loop by this
+behavior.
 
 <CodeSample>
 ```javascript
@@ -65,13 +67,18 @@ Unlike vim or sed, I was really surprised by this behavior:
   bg-gradient-to-tr
   from-primary-500
   to-secondary-500
-">JavaScript, whyyy do you do this?</p>
+">JavaScript, what is happening???</p>
 
-It turns out that with a partial match, finding and replacement only affects
-the text for which it matched. So, we cannot touch the `' string'` substring at
-all with the find and replace syntax here, since it wasn't captured by the
-regular expression. In practice, that means we need at least two capture groups
-to do anything useful.
+I expected this usage to cause some change to the output, but the output was
+unaffected.
+
+### Partial Matches Partially Replace
+
+It turns out that with a partial match, finding and replacing only affects the
+text for which it matched. So, we cannot touch the `' string'` substring at all
+with the pattern shown above, since it wasn't captured by the regular
+expression. In practice, that means we need to capture everything we want to
+transform to do anything useful.
 
 <CodeSample>
 ```javascript
@@ -139,6 +146,8 @@ reg.test('hi@hi.co')  // false
 ```
 </CodeSample>
 
+## Bringing It All Together
+
 With that in mind, let's look at examples that combine everything we've
 learned!
 
@@ -189,15 +198,18 @@ challenge = challenge.replace(reg, '$1@$2.gov')
 ```
 </CodeSample>
 
+## Summary
+
 So, basically, if we have an exact match, the behavior is pretty unsurprising.
 If we don't have a match, the whole string just gets passed through. If we have
 a partial match, javascript performs the transformation on the bit that
 matched, but doesn't touch the rest.
 
-Here are a few more examples.
+## Extra Examples
 
 <CodeSample>
 ```javascript
+// halloween substitution 👻
 'hello world'.replace(/(hell)(o)/, '$1') // 'hell world'
 ```
 </CodeSample>
@@ -210,12 +222,14 @@ And `$2` captures the `o`:
 ```
 </CodeSample>
 
-There are quite a few decent resources on the internet already, of course:
+## Other Resources
 
 - [mdn](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/n)
 - [stack overflow; "JavaScript replace method, replace with "$1""](https://stackoverflow.com/a/3235785)
 - [more detailed blog-style
   guide](https://www.javascripttutorial.net/javascript-regex/replace/)
+
+## See Also: Modifier Flags
 
 Another important topic for understanding regex in JavaScript is regex modifier
 flags, which I've ignored to keep it simple here, but [mdn documents them very
