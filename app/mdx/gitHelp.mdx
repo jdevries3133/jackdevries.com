@@ -1,0 +1,414 @@
+---
+title: "Git: Some Help"
+description: A tutorial for shell aliases, staging hunks, cherry-picking, understanding merge commits, reverting commits, the ref log, and interactive rebasing.
+created: 2022-10-16
+thumbnail: /static/gitSomeHelp.webp
+---
+
+import { CodeSample } from '../components/codeSample';
+import { Image } from '../components/image';
+
+# Git: Some Help
+
+<video muted controls loop  autoPlay>
+    <source src="/static/gitSomeHelp.mp4" type="video/mp4" />
+</video>
+
+This is a tutorial for the following topics:
+
+- shell aliases
+- staging hunks (`git add -i`)
+- cherry-picking
+- understanding merge commits
+- reverting commits
+- the ref log (`git reflog`)
+- interactive rebasing. (`git rebase -i`)
+
+## Shell Aliases
+
+Off the top of my head, here are a few aliases I use almost every day, and you
+can see how much typing they save.
+
+<table>
+  <thead>
+    <tr>
+      <td>Alias</td>
+      <td>Command</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ga</code></td>
+      <td><code>git add</code></td>
+    </tr>
+    <tr>
+      <td><code>gc</code></td>
+      <td><code>git commit</code></td>
+    </tr>
+    <tr>
+      <td><code>gca</code></td>
+      <td><code>git commit --amend</code></td>
+    </tr>
+    <tr>
+      <td><code>gcan!</code></td>
+      <td><code>git commit --amend --no-edit</code></td>
+    </tr>
+    <tr>
+      <td><code>gpsup</code></td>
+      <td><code>git push --set-upstream $CURRENT_BRANCH</code></td>
+    </tr>
+    <tr>
+      <td><code>gl</code></td>
+      <td><code>git pull</code></td>
+    </tr>
+    <tr>
+      <td><code>gmom</code></td>
+      <td><code>git merge origin/master</code></td>
+    </tr>
+    <tr>
+      <td><code>gst</code></td>
+      <td><code>git status</code></td>
+    </tr>
+    <tr>
+      <td><code>gwip</code></td>
+      <td><code>{`git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign -m "--wip-- [skip ci]`}</code></td>
+    </tr>
+    <tr>
+      <td><code>gunwip</code></td>
+      <td><code>git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1</code></td>
+    </tr>
+  </tbody>
+</table>
+
+I didn't write these aliases; for the most part, they come from
+[oh-my-zsh](https://ohmyz.sh/). If you don't use zsh or don't want install all
+of oh-my-zsh,
+[the source code for the git aliases is here](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh#L56-L322).
+You can copy and paste this into your `~/.bashrc` if you use bash, or adapt
+them to whatever terminal you use.
+
+In particular, we are going to use the `gwip` and `gunwip` commands throughout
+this guide to create various scenarios, so copy and paste this into your
+unix-like shell now:
+
+<CodeSample>
+```bash
+alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"'
+```
+</CodeSample>
+
+## Staging Hunks with `git add -i` and VSCode
+
+After cloning the [companion
+repo](https://github.com/jdevries3133/git_some_help), checkout to the branch
+`origin/interactive_staging`, and do a `gunwip`. `git diff` should then provide
+the following output:
+
+<CodeSample>
+```diff
+diff --git a/feature.txt b/feature.txt
+index 30dbb2c..7f9611b 100644
+--- a/feature.txt
++++ b/feature.txt
+@@ -1,3 +1,5 @@
++New feature! Great stuff.
++
+ This is pre-existing stuff.
+
+-It existed before you started yur feature.
++It existed before you started your feature.
+```
+</CodeSample>
+
+As you can see, we have two unrelated changes to `feature.txt`. First, we have
+our new feature at the top, and later a change to a pre-existing spelling
+mistake. Often, when we're working on a feature, we find things along the way
+that we want to adjust: refactoring something janky, rewording a comment, or
+even just fixing a spelling mistake. Ideally, we want to make these changes to
+improve the code, but it is also natural to hesitate to touch any source code
+outside the scope of the feature we're working on, since it'll make our commit
+history sloppy. Every commit must be singularly focused, concise, and atomic,
+but the minute-to-minute workflow in a codebase isn't necessarily like that.
+We need to be able to create commits that comprise a subset of the changes in
+our working tree, and that's exactly where interactive staging becomes useful.
+
+### Interactive Staging from the Command Line
+
+`git add --interactive` (or `git add -i`) will send you into an interactive
+REPL (read evaluate print loop) where you can stage and unstage chunks of code
+one at a time. You can try it out locally now, and here's what you should see:
+
+<CodeSample>
+```text
+           staged     unstaged path
+  1:    unchanged        +3/-1 feature.txt
+
+*** Commands ***
+  1: status       2: update       3: revert       4: add untracked
+  5: patch        6: diff         7: quit         8: help
+What now> 8
+status        - show paths with changes
+update        - add working tree state to the staged set of changes
+revert        - revert staged set of changes back to the HEAD version
+patch         - pick hunks and update selectively
+diff          - view diff between HEAD and index
+add untracked - add contents of untracked files to the staged set of changes
+```
+</CodeSample>
+
+Git prints out the list of modified files (just one in this case). The command
+we're most interested in is the "patch" command, which is where we can go
+through the changes in a single file and granularly stage changes one chunk at
+a time.
+
+After pressing `p` for patch, git will ask you to choose your file, enter `1`,
+since there's only one choice, and git will cycle through changes one by one,
+prompting you for what to do. Here's what I see on our `feature.txt` file:
+
+<CodeSample>
+```diff
+diff --git a/feature.txt b/feature.txt
+index 30dbb2c..7f9611b 100644
+--- a/feature.txt
++++ b/feature.txt
+@@ -1,3 +1,5 @@
++New feature! Great stuff.
++
+ This is pre-existing stuff.
+
+-It existed before you started yur feature.
++It existed before you started your feature.
+(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? ?
+y - stage this hunk
+n - do not stage this hunk
+q - quit; do not stage this hunk or any of the remaining ones
+a - stage this hunk and all later hunks in the file
+d - do not stage this hunk or any of the later hunks in the file
+s - split the current hunk into smaller hunks
+e - manually edit the current hunk
+? - print help
+```
+</CodeSample>
+
+Uh oh, git is viewing both of my changes as the same hunk! No worries, I can
+use the `s` command:
+
+<CodeSample>
+```diff
+(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? s
+Split into 2 hunks.
+@@ -1,2 +1,4 @@
++New feature! Great stuff.
++
+ This is pre-existing stuff.
+
+(1/2) Stage this hunk [y,n,q,a,d,j,J,g,/,e,?]?
+```
+</CodeSample>
+
+Much better! Now it's just showing me that first chunk of changes.
+
+Go ahead and experiment. When you are satisfied with the subset of  changes you
+have, exit the tool and make a commit as usual. Your goal is to end up with two
+separate commits that isolate the feature from the spelling fix.
+
+The correct answer is demonstrated on the [`origin/interactive_staging_answer`
+branch](https://github.com/jdevries3133/git_some_help/commits/interactive_staging_answer).
+
+### Interactive Staging with the VSCode
+
+First, run `git reset --hard origin/interactive_staging` to restore the state
+of your local branch to the remote branch, then `gunwip` again. This should
+bring your local environment back to the state at the beginning of the last
+example.
+
+You can also interactively add changes inside VSCode.
+
+<a title="View Large in New Tab" href="/static/vsCodeGitInteractiveStaging.webp" rel="noopener noreferrer" target="_blank">
+  <Image
+    src="/static/vsCodeGitInteractiveStaging.webp"
+    alt="Screenshot of interactive staging in VSCode"
+    caption="Interactive staging in VS Code"
+  />
+</a>
+
+### Interactive Staging with Vim
+
+In _*my opinion*_, nothing gets better than vim and [git
+fugitive](https://github.com/tpope/vim-fugitive). You can use `:Gdiff` to open
+a diff view for a file. You can use `dp` (diff put) to push changes from the
+side your cursor is currently on to the opposite side, or `dg` (diff get) to
+pull changes from the opposing side of the diff into your side. You can also
+directly edit either side of the diff. This offers very granular control over
+exactly what is staged versus unstaged.
+
+<a title="View Large in New Tab" href="/static/interactiveStagingVim.webp" rel="noopener noreferrer" target="_blank">
+  <Image
+    src="/static/interactiveStagingVim.webp"
+    alt="Screenshot of interactive staging in Vim"
+    caption="Interactive staging in Vim"
+  />
+</a>
+
+## Cherry-Picking
+
+`git cherry-pick` is simple but sometimes super useful. Let's say you build
+some super handy developer tooling features for your team. It would really help
+for a feature you're developing, but it's currently trapped in code-review
+purgatory. The feature exists on a different branch, but you want it on your
+dev branch for this feature so that you can use it right now!
+
+It turns out, you can snatch a commit by it's SHA-1 hash from any branch with
+git cherry-pick.
+
+For this demo, start by checking out to the `cherry_pick` branch; it's the same
+as the main branch.
+
+```bash
+git checkout origin/cherry_pick
+```
+
+Now, we have a branch `origin/cool_new_features`. It has three new features on
+it. Here's another trick: did you know you can pass a branch name to `git log`,
+so we can inspect what is on `origin/cool_new_feature` without needing to
+actually checkout again. Just run `git log origin/cool_new_feature`, and you
+should see the following output.
+
+
+<CodeSample>
+```text
+commit 81e142ae6eb5d85854af48f639a7fd3c368a7755 (origin/cool_new_features, cool_new_features)
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Sun Oct 16 17:42:09 2022 -0400
+
+    feature three
+
+commit fdd0fbb5ce7190f3cb7d2c33ae9dbc3137a923e4
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Sun Oct 16 17:41:58 2022 -0400
+
+    feature two
+
+commit aa7d855ad3bdb56b8400318e1fed9da88d3bfe13
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Sun Oct 16 17:41:46 2022 -0400
+
+    feature one
+
+commit 27c637c175fe617aca38f6df62e895742861857b (HEAD -> cherry_pick, origin/main, main)
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Sun Oct 16 16:22:39 2022 -0400
+
+    initial commit & readme
+```
+</CodeSample>
+
+From here, we can very easily yank "feature two" onto our dev branch
+("`cherry_pick`") as follows:
+
+```
+git cherry-pick fdd0fbb5ce7190f3cb7d2c33ae9dbc3137a923e4
+```
+
+After running this command, do a `git log` to see that "feature two," and none
+of the other features from `origin/cool_new_features`, are now on your dev
+branch. You should see the following history:
+
+<CodeSample>
+```text
+commit e24d759232f286de07247a0d54b4260e231f03c0 (HEAD -> cherry_pick)
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Sun Oct 16 17:41:58 2022 -0400
+
+    feature two
+
+ feat_two.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 27c637c175fe617aca38f6df62e895742861857b (origin/main, main)
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Sun Oct 16 16:22:39 2022 -0400
+
+    initial commit & readme
+
+ README.md | 4 ++++
+ 1 file changed, 4 insertions(+)
+```
+</CodeSample>
+
+## Understanding Merge Commits
+
+To really dig in with merge commits, it helps to have a project whose history
+is a bit richer than a trivial demo repo, so I'll refer to the [neovim
+codebase](https://github.com/neovim/neovim).
+
+Version histories based on merging are more confusing to follow than those
+based on rebasing. When you squash a commit and rebase it onto another, your
+history remains linear and easy to understand:
+
+```text
+A - B - C -- x - x - x -- (DEF) - H - I ...
+         \ - D - E - F - /
+```
+
+When we merge, though, the git history stores all the intermediary state of
+every branch. It's a trade-off, where merging chooses detail and accuracy over
+simplicity. Let's look at a bit of the version history of the neovim codebase,
+using `git log --oneline --decorate --graph`.
+
+<a title="View Large in New Tab" href="/static/gitMergeHistory.webp" rel="noopener noreferrer" target="_blank">
+<Image
+  src="/static/gitMergeHistory.webp"
+  alt="Image of git merge history, described in more detail with text to follow"
+  caption="Neovim Version History"
+/>
+</a>
+
+What this shows is how git is aware of distinct branches' history, and it's
+visualizing dev branches as they work their way to the left to be merged into
+the main branch. Longer lived branches, like the salmon colored one on the
+left, don't merge with the main branch within the view that we see here; we'd
+have to scroll higher up to see where that happens.
+
+In this view, it's hard to see where these branches come from, where they're
+going, and what these lines represent. I strongly encourage you at this point
+to open this view up in your terminal if you haven't already. It can be on any
+codebase that uses merging; not necessarily neovim.
+
+Let's focus on one little spot in the history:
+
+
+<Image
+  src="/static/gitHistoryFocus.webp"
+  alt="Close view of a single branch diverging and re-converging with the main branch."
+  caption="Focus on the Pink Branch"
+/>
+
+Here, we can see more clearly what this represents by looking at a relatively
+short-lived branch. The base of the pink branch at the bottom of the image is
+where the developer initially created the branch. This is the first merge
+base between the pink branch and `main`. On the second line from the top, we
+finally see the feature the pink branch dev implemented, "feat(ui): use
+msg_grid based implementation for cmdheight=0." Right after that, we see a
+second connection between the pink branch and the `main` branch. This is the
+merge commit where pink combined with `main`. The commit message indicated as
+much: "Merge pull request #20188 from bfredl/zerocmdline."
+
+## Wip!
+
+Aaaand I'm out of time for now; publishing what I have so far.
+
+## Reverting Commits
+
+- reverting merge commits is where this comes into play
+- see https://stackoverflow.com/a/31223198
+
+
+
+- add example to companion repo for replicating this merge commit reversion
+  process
+
+## Reflog
+
+## Interactive Rebasing

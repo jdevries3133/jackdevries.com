@@ -14,6 +14,8 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
 };
 
+// fonts for this website
+// https://fonts.google.com/share?selection.family=Source%20Code%20Pro:wght@400;600%7CSource%20Sans%20Pro:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600%7CSource%20Serif%20Pro:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600
 export default function App() {
   return (
     <html lang="en">

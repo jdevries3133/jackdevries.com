@@ -9,12 +9,14 @@ import * as myNeovimConfig from "./myNeovimConfig.mdx";
 import * as jsFindReplace from "./jsFindReplace.mdx";
 import * as vimRipgrep from "./vimRipgrep.mdx";
 import * as vimRegex from "./vimRegex.mdx";
+import * as gitHelp from "./gitHelp.mdx";
 
 /**
  * This is where posts can be published or unpublished. All posts in the array
  * below are published.
  */
 export const allPosts = [
+  gitHelp,
   vimRipgrep,
   vimRegex,
   jsFindReplace,
