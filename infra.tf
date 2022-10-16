@@ -28,6 +28,10 @@ provider "helm" {
   }
 }
 
+variable "email_password" {
+  type = string
+}
+
 resource "random_password" "admin_password" {
   length  = 48
   special = false
@@ -51,7 +55,9 @@ module "basic-deployment" {
   domain    = "jackdevries.com"
 
   extra_env = {
-    ADMIN_PASSWORD = random_password.admin_password.result
-    SECRET_KEY     = random_password.secret_key.result
+    ADMIN_PASSWORD        = random_password.admin_password.result
+    SESSION_SECRET        = random_password.secret_key.result
+    EMAIL_PASSWORD        = var.email_password
+    EMAIL_SENDING_ENABLED = 1
   }
 }
