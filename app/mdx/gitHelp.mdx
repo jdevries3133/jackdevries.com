@@ -21,8 +21,6 @@ This is a tutorial for the following topics:
 - cherry-picking
 - understanding merge commits
 - reverting commits
-- the ref log (`git reflog`)
-- interactive rebasing. (`git rebase -i`)
 
 ## Shell Aliases
 
@@ -80,10 +78,10 @@ can see how much typing they save.
   </tbody>
 </table>
 
-I didn't write these aliases; for the most part, they come from
-[oh-my-zsh](https://ohmyz.sh/). If you don't use zsh or don't want install all
-of oh-my-zsh,
-[the source code for the git aliases is here](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh#L56-L322).
+I didn't write these aliases; they come from [oh-my-zsh](https://ohmyz.sh/). If
+you don't use zsh or don't want install all of oh-my-zsh, [the source code for
+the git aliases is
+here](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh#L56-L322).
 You can copy and paste this into your `~/.bashrc` if you use bash, or adapt
 them to whatever terminal you use.
 
@@ -98,7 +96,13 @@ alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commi
 ```
 </CodeSample>
 
-## Staging Hunks with `git add -i` and VSCode
+## Clone the Companion Repo for Interactive Examples
+
+There is a [companion repo](https://github.com/jdevries3133/git_some_help) to
+accompany this post. Clone it, then `cd` into it and pull all the remote
+branches with `git pull --all`
+
+## Staging Hunks with `git add -i`, VSCode, or Vim
 
 After cloning the [companion
 repo](https://github.com/jdevries3133/git_some_help), checkout to the branch
@@ -339,76 +343,225 @@ Date:   Sun Oct 16 16:22:39 2022 -0400
 
 ## Understanding Merge Commits
 
-To really dig in with merge commits, it helps to have a project whose history
-is a bit richer than a trivial demo repo, so I'll refer to the [neovim
-codebase](https://github.com/neovim/neovim).
+Let's dive deep into the wonky and wonderful world of merge commits. Every time
+you merge two branches, the merge commit of those two branches is exactly the
+same. Git has no understanding of which of the two is "main" or "master"; it
+only combines them. We can demonstrate this by creating two branches, `A`, and
+`B`. If we create different commits on each, then merge `A` into `B` and `B`
+into `A`, we'll notice that the git hash at the tip of the branches becomes the
+same; the branches are, at that moment, exactly equivalent.
 
-Version histories based on merging are more confusing to follow than those
-based on rebasing. When you squash a commit and rebase it onto another, your
-history remains linear and easy to understand:
+This is demonstrated on the example repo with the branches `merge_a`, and
+`merge_b`. Try it out to see for yourself:
 
-```text
-A - B - C -- x - x - x -- (DEF) - H - I ...
-         \ - D - E - F - /
+```bash
+$ echo "A: $(git rev-parse origin/merge_a)"
+A: bf48661afb198965704cd30ae205add341d3ede8
+$ echo "B: $(git rev-parse origin/merge_b)"
+B: bf48661afb198965704cd30ae205add341d3ede8
 ```
 
-When we merge, though, the git history stores all the intermediary state of
-every branch. It's a trade-off, where merging chooses detail and accuracy over
-simplicity. Let's look at a bit of the version history of the neovim codebase,
-using `git log --oneline --decorate --graph`.
+To dig in a bit deeper, I created a bunch of "dev branches" off of `main` on
+our repo, and merged them each back in with a few unique changes. As you can
+see, I intentionally made the lifecycles of these dev branches criss-cross so
+that we can see many scenarios.
 
-<a title="View Large in New Tab" href="/static/gitMergeHistory.webp" rel="noopener noreferrer" target="_blank">
-<Image
-  src="/static/gitMergeHistory.webp"
-  alt="Image of git merge history, described in more detail with text to follow"
-  caption="Neovim Version History"
-/>
+Here's a quick overview of all the dev branches that exist:
+
+```bash
+$ git branch --remote | grep dev
+origin/dev_branch
+origin/dev_branch_two
+origin/dev_branch_three
+origin/dev_branch_four
+origin/dev_branch_five
+```
+
+
+The only file changed throughout all this is `example.txt`. Here's what it
+looks like at the end:
+
+```text
+change one
+change two
+change three
+change on branch two number one
+change on branch two number two
+change on branch two number three
+change four
+change five
+change six
+dev branch 3 #1
+dev branch 3 #2
+dev branch 3 #3
+misc commit x
+misc commit y
+misc commit z
+dev branch 4 #1
+dev branch 4 #2
+dev branch 4 #3
+dev branch 5 #1
+dev branch 5 #2
+dev branch 5 #3
+```
+
+Now, each line in the file above belongs to a commit in the history below. Line
+content and commit message always matches, except for the initial commit and
+merge commits throughout.
+
+<a title="View Large in New Tab" href="/static/crissCrossHistory.webp" rel="noopener noreferrer" target="_blank">
+  <Image
+    src="/static/crissCrossHistory.webp"
+    alt="A visual of criss-crossing git histories."
+    caption={<p>Result of{" "} <code>git log --oneline --decorate --graph</code></p>}
+  />
 </a>
 
-What this shows is how git is aware of distinct branches' history, and it's
-visualizing dev branches as they work their way to the left to be merged into
-the main branch. Longer lived branches, like the salmon colored one on the
-left, don't merge with the main branch within the view that we see here; we'd
-have to scroll higher up to see where that happens.
+What's amazing if you hadn't realized this before is that git keeps track of
+these many concurrent versions of history forever. Although `git log` makes it
+look like history is linear, it really isn't. If you checkout to a commit on
+one of these branches, the state of the source tree is exactly as it was when
+you were working on that commit on the dev branch. For example, look at
+`dev_branch_five`. I intentionally branched off an early commit in the history,
+and didn't land it back on `main` until the very end. As such, you can see the
+green line snaking through the whole history. Focus on `7b7f59a`, it's the
+second commit from the top. If you were looking at `git log`, which squashes
+this history into a linear progression, you'd probably think that `7b7f59a`
+contains all the stuff that _apparently_ precedes it. Actually, if you checkout
+to this commit, you'll see that it only contains the commits on that green
+line! In other words, only the commits from `dev_branch_five` itself, as well
+as the original `dev_branch`. A bash snippet is worth a thousand words, it
+seems; give it a try:
 
-In this view, it's hard to see where these branches come from, where they're
-going, and what these lines represent. I strongly encourage you at this point
-to open this view up in your terminal if you haven't already. It can be on any
-codebase that uses merging; not necessarily neovim.
-
-Let's focus on one little spot in the history:
-
-
-<Image
-  src="/static/gitHistoryFocus.webp"
-  alt="Close view of a single branch diverging and re-converging with the main branch."
-  caption="Focus on the Pink Branch"
-/>
-
-Here, we can see more clearly what this represents by looking at a relatively
-short-lived branch. The base of the pink branch at the bottom of the image is
-where the developer initially created the branch. This is the first merge
-base between the pink branch and `main`. On the second line from the top, we
-finally see the feature the pink branch dev implemented, "feat(ui): use
-msg_grid based implementation for cmdheight=0." Right after that, we see a
-second connection between the pink branch and the `main` branch. This is the
-merge commit where pink combined with `main`. The commit message indicated as
-much: "Merge pull request #20188 from bfredl/zerocmdline."
-
-## Wip!
-
-Aaaand I'm out of time for now; publishing what I have so far.
+```text
+$ git checkout 7b7f59a \
+      && cat example.txt \
+      && git checkout -
+change one
+change two
+change three
+dev branch 5 #1
+dev branch 5 #2
+dev branch 5 #3
+```
 
 ## Reverting Commits
 
-- reverting merge commits is where this comes into play
-- see https://stackoverflow.com/a/31223198
+With all that newfound knowledge, we can start to understand what is going on
+when we try to revert one of these merge commits, and get the following
+message:
 
+<CodeSample>
+```text
+$ git revert 4608cadcaa71390123e23cb1614ad4d1c4928aaf
+error: commit 4608cadcaa71390123e23cb1614ad4d1c4928aaf is a merge but no -m
+option was given.
+fatal: revert failed
+```
+</CodeSample>
 
+Spooky, but no worries, let's see what the man page says for the `-m` option of
+`git revert`!
 
-- add example to companion repo for replicating this merge commit reversion
-  process
+<CodeSample>
+```text
+-m parent-number, --mainline parent-number
 
-## Reflog
+    Usually you cannot revert a merge because you do not know which side of the
+    merge should be considered the mainline. This option specifies the parent
+    number (starting from 1) of the mainline and allows revert to reverse the
+    change relative to the specified parent.
 
-## Interactive Rebasing
+    Reverting a merge commit declares that you will never want the tree changes
+    brought in by the merge. As a result, later merges will only bring in tree
+    changes introduced by commits that are not ancestors of the previously
+    reverted merge. This may or may not be what you want.
+
+    See the revert-a-faulty-merge How-To[1] for more details.
+```
+</CodeSample>
+
+Yeah, totally self explanatory! Anyway, to quote myself from a few paragraphs
+ago:
+
+> Every time you merge two branches, the merge commit of those two branches is
+> exactly the same. Git has no understanding of which of the two is "main" or
+> "master"; it only combines them.
+
+As we saw, after `merge_a` and `merge_b` were merged into each other, they had
+the same exact git hash. Every merge commit, therefore, represents a "fork in
+the road" if we're trying to travel backwards through history; and git doesn't
+have any affinity for one path over the other. Except, the fork in the road
+analogy has a caveat: the road does generally come back together again a few
+commits later.
+
+Let's focus on this piece of history on `main`:
+
+<CodeSample>
+```text
+* 2b4f4f4 Merge branch 'dev_branch'
+|\
+| * c5b380a change three
+| * 237db4d change two
+| * 236e6ec change one
+|/
+* 27c637c (merge_two.txt, merge_two) initial commit & readme
+```
+</CodeSample>
+
+Reverting `2b4f4f4` implies that either the code on the left side will be
+reverted (purple), or the code on the right (string of stars). Obviously, if
+we're trying to undo everything that happened in that dev branch, we want to
+throw away the branch on the right side and keep what's on the left, discarding
+the commits created on the dev branch. Git, however, cannot help us. We need to
+help ourselves. We can help ourselves with the `-m` flag.
+
+Count the possible branches from left to right. In this case, we have only two
+options. If we revert with `-m 1`, git keeps the first path, discarding all
+others. This is what we want. If, however, we say `-m 2`, nothing will actually
+happen! That's because there are no commits on the left side of history. Try it
+out!
+
+<CodeSample>
+```text
+# when we try to discard the history on the left side, git tells us there is
+# nothing to do
+$ git revert -m 2 2b4f4f4
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+```
+</CodeSample>
+
+If there were an intermediary commit on the left side, though, passing `-m 2`
+would keep the history on the right and remove what's on the left; removing
+commits that might be completely unrelated to what we're trying to revert!
+
+Looking back at the full history, there is an example like that: reverting the
+merge commit for `dev_branch_five`. Experiment, and see what happens when you
+keep the history on the left, versus the history on the right! Obviously, the
+two histories are quite different, so experimentation here should give you a
+feel for what is happening. If you choose `-m 1`, you will revert
+`dev_branch_five` as we understand it. If, on the other hand, you pass `-m 2`,
+you'll tell git to use the full history of `dev_branch_five` and abandon what
+we know as a bunch of work on `main`! <span className="text-sm italic">(I
+didn't get time to test it, let's experiment and confirm whether this is the
+case!)</span>
+
+Keep in mind that if you're consistently merging into `main`, and every
+non-main branch only branches away once and branches back once, reverting merge
+commits should be simple. If, however, you're using git flow, where you have
+many possible target branches, and maybe also long-lived dev branches, the
+history graph as visualized earlier can start grow towards the right side of
+your screen, and there can be many possible paths for reverting merge commits.
+
+## Reflog and Interactive Rebasing
+
+No time to finish off this section...
+
+<Image
+  src="/static/doItLive.webp"
+  alt="Screenshot of Bill O'Reily's famous 'Fuck it, we'll do it live!' moment"
+  caption="We'll do it live!"
+/>
