@@ -1,0 +1,49 @@
+---
+title: Docker Resources
+description: A collection of resources about docker, docker-compose, and containers in general that are useful for learning.
+created: 2022-11-01
+thumbnail: /static/docker.webp
+---
+
+# Docker Learning Resources
+
+Here is a collection of resources that are useful for learning about docker,
+from the ground up.
+
+## What are Containers?
+
+- [guide from docker's website](https://www.docker.com/resources/what-container/)
+- [deep dive on Linux kernel tech that underpins containers from Red Hat](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/overview_of_containers_in_red_hat_systems/introduction_to_linux_containers)
+
+## Docker CLI
+
+- [overview of docker
+  commands](https://linuxhandbook.com/essential-docker-commands/)
+- [docker's docs](https://docs.docker.com/engine/reference/commandline/cli/)
+
+## Docker Experiments
+
+Quick demos that show what you can do with the docker CLI alone
+
+[Startup a new mysql server locally](https://hub.docker.com/_/mysql) _see "How
+to use this image" section
+
+Run a redis server locally & attach to it with just 1 line:
+
+```bash
+docker run -it --rm redis redis-cli -h some-redis
+```
+
+Print out the `resolv.conf` for Ubuntu:latest
+
+```bash
+docker run ubuntu:latest cat /etc/resolv.conf
+```
+
+Run a local python script inside an Alpine container instead of on your own
+machine.
+
+```bash
+echo "print('hello, world!')" > main.py
+docker run -v $(pwd)/main.py:/main.py python:3-alpine python3 main.py
+```

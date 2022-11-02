@@ -10,12 +10,16 @@ import * as jsFindReplace from "./jsFindReplace.mdx";
 import * as vimRipgrep from "./vimRipgrep.mdx";
 import * as vimRegex from "./vimRegex.mdx";
 import * as gitHelp from "./gitHelp.mdx";
+import * as jsBuild from "./javascriptTools.mdx";
+import * as dockerResources from "./dockerResources.mdx";
 
 /**
  * This is where posts can be published or unpublished. All posts in the array
  * below are published.
  */
 export const allPosts = [
+  dockerResources,
+  jsBuild,
   gitHelp,
   vimRipgrep,
   vimRegex,
