@@ -16,7 +16,7 @@ start:
 	docker-compose \
 		-f docker-compose.yml \
 		-f docker-compose.dev.yml \
-		up -d
+		up -d --build
 
 
 .PHONY: deploy
@@ -30,14 +30,6 @@ endif
 .PHONY: push
 push:
 	docker buildx build --pull --platform linux/amd64 --push -t $(CONTAINER) .
-
-
-.PHONY: develop
-develop:
-	docker-compose \
-		-f docker-compose.yml \
-		-f docker-compose.dev.yml \
-		up -d
 
 
 .PHONY: debug
