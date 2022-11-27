@@ -556,12 +556,307 @@ many possible target branches, and maybe also long-lived dev branches, the
 history graph as visualized earlier can start grow towards the right side of
 your screen, and there can be many possible paths for reverting merge commits.
 
-## Reflog and Interactive Rebasing
+## Interactive Rebasing
 
-No time to finish off this section...
+Re-basing is a way to permanently change git history, and to combine branches
+in a way that creates simple linear history rather than branching history as we
+saw in the section about merge commits.
+
+### Comparing Combining Branches via Rebasing vs. Merging
+
+Re-basing, in some sense, is the opposite of merging in git. As we just
+learned, git does some truly elegant stuff to maintain and combine multiple
+parallel versions of history. Re-basing treats history carelessly, allowing you
+to make changes that prevent this parallelized history from ever existing. When
+you re-base one branch onto another, you end up with a linear history that
+looks pretty "clean," at the cost of losing some information about the versions
+of software that truly used to exist.
 
 <Image
-  src="/static/doItLive.webp"
-  alt="Screenshot of Bill O'Reily's famous 'Fuck it, we'll do it live!' moment"
-  caption="We'll do it live!"
+  src="/static/visualizeMergingViaMerge.webp"
+  alt="Visualization of combining branches with git merge"
+  caption="Visualization of combining branches with git merge"
 />
+
+<Image
+  src="/static/visualizeMergingWithRebase.webp"
+  alt="Visualization of combining branches with git rebase"
+  caption="Visualization of combining branches with git rebase"
+/>
+
+Despite this haphazard treatment of history, I do prefer to use re-basing to
+keep my development branches in sync with the main branch while I am developing
+on that branch. The reason is that when you finish your feature and are ready
+to make a pull request, you might find that you want to make some changes to
+your commit history for that feature. Having your feature commits at the tip of
+your development branch makes it easier to revise history through interactive
+re-basing.
+
+### What is Interactive Rebasing?
+
+Now, let's finally get to the point here: **what is interactive rebasing?**
+Interactive re-basing is a tool that exists on top of re-basing to make it easy
+for you to permanently change git history in any way. This can clearly be quite
+destructive, but it can also be useful for a few compelling use cases.
+
+- You have a bunch of small incremental commits that helped your development
+  process, but make you look like kind of an insane person. You want to squash
+  them down into a single commit, or a series of commits that tell a nicer
+  story for your reviewer.
+- You notice a typo in a commit message, or realize that a commit message
+  doesn't adhere to the standards set by your team.
+- You need to drop commits from the history of your dev branch. For example,
+  maybe you were developing against an experimental dependent feature which is
+  being reviewed separately, and you want to pull those changes out of your dev
+  branch so that code review can get started while the experimental feature
+  also is being reviewed separately.
+- You want to take a series of not-dependent commits and fan them out into
+  multiple dev branches so that you can open multiple smaller PRs instead of a
+  single gigantic one, to better support your reviewer
+- You had a bug in an early commit on a feature which persisted through the
+  following commits. You want to go back to the commit where the bug was
+  introduced and patch it there, so that the reviewer doesn't have to see the
+  bug and then later see the revision if they are reviewing commit-by-commit
+
+Most of these things are great practices to keep your code reviewer happy and
+make your reviews move faster, but you're going to need to change git history
+to do any of them. You should also note that making changes to git history
+_during_ the code review process can sometimes be problematic. GitHub and
+GitLab might get confused when you force push over an open MR. In my
+experience, GitLab tries pretty hard to be resilient against these types of
+changes, while GitHub is much more prone to conniptions. Either way, beware of
+the consequences of changing history after the MR or PR has been created.
+Generally, it's best to pause and get history as tidy as you want before
+starting the code review process.
+
+### How to Interactively Rebase
+
+Going back to the companion repo, you can checkout to the branch
+`origin/interactive_rebasing`.
+
+```bash
+git checkout origin/interactive_rebasing
+```
+
+Once you're there, you can see that this branch has three dummy commits on the
+tip of its history named appropriately:
+
+<CodeSample>
+```text
+commit 0dacf82d276bebc23b6f68cc5c088715ae58e383 (HEAD -> interactive_rebasing, origin/interactive_rebasing)
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Sat Nov 26 21:11:10 2022 -0500
+
+    interactive rebase commit 3
+
+ example.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 1c0a76e93f416eab3e24c64d93f532d2ce21e010
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Sat Nov 26 21:11:02 2022 -0500
+
+    interactive rebase commit 2
+
+ example.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit abb6a01318431d5c41f5986e31ec51fcaf772a9d
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Sat Nov 26 21:10:54 2022 -0500
+
+    interactive rebase commit 1
+
+ example.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 4608cadcaa71390123e23cb1614ad4d1c4928aaf (origin/main, origin/HEAD, main)
+Merge: 2fddb59 7b7f59a
+Author: Jack DeVries <jdevries3133@gmail.com>
+Date:   Tue Oct 18 21:30:14 2022 -0400
+
+    Merge branch 'dev_branch_five'
+```
+</CodeSample>
+
+I included the last commit so you can see where this branch diverged from
+`main`, which will come up later in this section.
+
+Now, a common way to interactively re-base is to "rebase the last 3 commits."
+To express this using the git CLI, we would use the following command:
+
+```bash
+git rebase -i HEAD~3
+```
+
+`HEAD` is the commit at the tip of the current branch
+(`0dacf82d276bebc23b6f68cc5c088715ae58e383` in this case). The tilde and the
+number is an expression that means "three commits before" whatever it proceeds.
+So, `HEAD~3` is "3 commits before `HEAD`, which resolves to
+`4608cadcaa71390123e23cb1614ad4d1c4928aaf`. If you're not convinced, you can
+use the `rev-parse` command (revision parse) to print out how git resolves the
+whole expression.
+
+```bash
+$ git rev-parse HEAD~3
+4608cadcaa71390123e23cb1614ad4d1c4928aaf
+```
+
+Now that we have a target commit we want to re-base against, and the whole
+command we want to run (`git rebase -i HEAD~3`), we can run that command and
+you'll see this pop up in your editor:
+
+<CodeSample>
+```text
+pick abb6a01 interactive rebase commit 1
+pick 1c0a76e interactive rebase commit 2
+pick 0dacf82 interactive rebase commit 3
+
+# Rebase 4608cad..0dacf82 onto 4608cad (3 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup [-C | -c] <commit> = like "squash" but keep only the previous
+#                    commit's log message, unless -C is used, in which case
+#                    keep only this commit's message; -c is same as -C but
+#                    opens the editor
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+#         create a merge commit using the original merge commit's
+#         message (or the oneline, if no original merge commit was
+#         specified); use -c <commit> to reword the commit message
+# u, update-ref <ref> = track a placeholder for the <ref> to be updated
+#                       to this position in the new commits. The <ref> is
+#                       updated at the end of the rebase
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+```
+</CodeSample>
+
+And there you go, just edit the three lines of text at the top according to the
+directions at the bottom, and git will guide you through reorganizing history
+in whatever way you wish. After you save and exit the file, git will execute
+the procedure you've created through your text changes from the top to the
+bottom. Certain commands like `edit` will cause the re-basing process to stop
+at an old commit, where you can change the code and amend to the historical
+commit as you wish. If you are confused at any
+point in the process, just run `git status`, and git will give you some handy
+information about what is going on and what you need to do next, which will
+usually be some variation of:
+
+- Git is ready to proceed, you can run `git rebase --continue`
+- There is a merge conflict you need to resolve
+- We are stopped for editing. You can make the edit, or if you run `git rebase
+  --continue` without making an edit, that'll cause no edit to occur.
+
+You can also run `git rebase --abort` at any point in the process if things
+start to go sideways, and it'll be like nothing ever happened!
+
+Experiment with the companion repo, and change history as you wish! Change
+commit messages, reorder commits, make edits and amends to old commits, and
+squash commits together until you have a feel for the process. Each of the 3
+commits for you to practice on have changes that are close together, so merge
+conflicts will often occur during the re-basing process if you change an old
+commit or reorder commits; this is great practice too!
+
+## Reflog
+
+The ref log is a simple but hugely useful command, especially if _someone_ has
+been monkeying with git history! In fact, if you've made a mistake and deleted
+a bunch of work through a bad re-base, I can guarantee you that this command
+will save you more time than anything else I've shared so far!
+
+Conceptually, it's easy to understand what the ref log is. Here's the `git
+reflog` output from my instance of the companion repo after writing the
+previous section about re-basing:
+
+<CodeSample>
+```text
+0dacf82 (HEAD -> interactive_rebasing, origin/interactive_rebasing) HEAD@{0}: rebase (finish): returning to refs/heads/interactive_rebasing
+0dacf82 (HEAD -> interactive_rebasing, origin/interactive_rebasing) HEAD@{1}: rebase (start): checkout HEAD~3
+0dacf82 (HEAD -> interactive_rebasing, origin/interactive_rebasing) HEAD@{2}: commit: interactive rebase commit 3
+1c0a76e HEAD@{3}: commit: interactive rebase commit 2
+abb6a01 HEAD@{4}: commit: interactive rebase commit 1
+4608cad (origin/main, origin/HEAD, main) HEAD@{5}: checkout: moving from main to interactive_rebasing
+4608cad (origin/main, origin/HEAD, main) HEAD@{6}: clone: from github.com:jdevries3133/git_some_help.git
+```
+</CodeSample>
+
+As you can see, it's literally a log of all the commits that your local `HEAD`
+has pointed to while you're working. If you do a big re-base, every single step
+of the process, even ones that git whizzes past will be pushed into this log.
+Every time you checkout between branches, it's logged. Try running this command
+anywhere in the companion repo.
+
+<CodeSample>
+```bash
+# warning: this command is destructive!
+git reset --hard HEAD~1
+```
+</CodeSample>
+
+That command will delete the most recent commit from the branch you are working
+on. The work is (apparently) gone forever! If you've ever done this by mistake
+and not known how to get your work back, you will forever remember the feeling
+of dread.
+
+I ran this command in the companion repo, but here is what the ref log looks
+like after running it:
+
+<CodeSample>
+```text
+1c0a76e (HEAD -> interactive_rebasing) HEAD@{0}: reset: moving to HEAD~1
+0dacf82 (origin/interactive_rebasing) HEAD@{1}: rebase (finish): returning to refs/heads/interactive_rebasing
+```
+</CodeSample>
+
+So, `1c0a76e` is the commit I am checked out to _after_ the reset; the version
+of history where my latest work does not exist, but `0dacf82`, the second item
+in the ref log, still has the commit I thought I just deleted forever! Best of
+all, I can go right back to that commit using a simple `git checkout`:
+
+<CodeSample>
+```bash
+# you can use the commit hash fragment from the reflog
+git checkout 0dacf82 
+
+# you can also use this expression, which is basically an index into the
+# ref log. You see these throughout the ref log output
+git checkout HEAD@{1}
+```
+</CodeSample>
+
+As simple as that, our changes that were apparently lost forever are back on
+our local machine. To fully restore the working branch that we messed up, we
+just need to delete it, then checkout to a branch of the same name from our
+current position. Remember, we're currently just checked out onto a random
+free-floating commit that is not on any branch, so we want to fix that
+situation.
+
+<CodeSample>
+```bash
+# this is safe because we're currently checked out to the version of this
+# branch that we _do_ want
+git branch -D branch_we_messed_up
+
+# create a "new" branch of the same name, repairing our local git repo
+git checkout -b branch_we_messed_up
+```
+</CodeSample>
+
+## Wrap-Up
+
+Thanks for reading! Leave a comment if this was useful or if you have any
+feedback.
