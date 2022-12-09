@@ -286,9 +286,34 @@ SQL, and don't let anyone tell you that SQL inherently can't scale. Any system
 that tries to have consistency, availability, and no partitioning will not
 scale; that transcends SQL.
 
-<!-- ## CAP / ACID / BASE Challenges -->
+## CAP / ACID / BASE Challenges
 
-<!-- Here are a few system design challenges. Identify which property of the CAP -->
-<!-- Theorem the system should provide, and which ones we can skip. -->
+Here are a few system design challenges. Identify which property of the CAP
+Theorem the system should provide, and which ones we can skip.
 
-<!-- ### 1: --> 
+### 1: Friends of Friends Social Media
+
+Design a microservice that can tell you all the friends of friends for a user.
+This will be used for friend recommendations, so it's not critical that the
+system provides instantaneously up-to-date information. Syncing this service
+with reality every few hours is acceptable. We want to render friend
+recommendations for every page load. Clearly, we can cache the results for each
+user, but the service should not be down. Users' friends of friends can span
+any social network. We don't want to only find friends of friends in the same
+town, for example. We don't want friends-of-friends to be constrained by any
+data boundaries.
+
+### 2: Algorithmic Trading
+
+We want a bot that can perform trades on our behalf. The bot must know how much
+money we have before making a trade, otherwise it might overdraw our account.
+The bot cannot be down, or else we will miss out on profit.
+
+### 3: Report Card Generator
+
+We are creating a system to generate transcripts for students at a university.
+Grades have to be absolutely accurate, no compromises. Unfortunately, we can't
+separately process grades for a single department separately, because students
+can take classes in any department, no matter what department their major is
+in. We need to get transcripts printed sometime between April 15th and May 1st.
+Transcription orders must be satisfied within 10 days.
