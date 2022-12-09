@@ -69,10 +69,11 @@ Every time we want to create a name, we'll have to check the list of all
 existing names. If we sort our names alphabetically, we can perform a binary
 search for duplicates, but even a binary search still takes `O (log n)` time.
 For arbitrarily large inputs, the amount of time it will take never stops
-increasing. Our universe's infinite RAM helps because we don't need to consider
-round trip time of a disk or network that would occur in a real system. Still,
-at some point these uniqueness checks will start to drag. The fact that we have
-to perform a full check before every write is going to make that pain greater.
+increasing. At some point these uniqueness checks will start to drag. The fact
+that we have to perform a full check before every write is going to make that
+pain greater. Plus, consider that sooner or later, we'll have more data for
+RAM, then later more for any SSD or hard disk. Eventually, this scan will
+include network hops, further degrading performance.
 
 Additionally, our consistency requirement limits the extent to which our system
 can benefit from parallel processing. For ultra high consistency, two servers
