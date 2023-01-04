@@ -12,14 +12,12 @@ import * as vimRegex from "./vimRegex.mdx";
 import * as gitHelp from "./gitHelp.mdx";
 import * as jsBuild from "./javascriptTools.mdx";
 import * as dockerResources from "./dockerResources.mdx";
-import * as capTheorem from "./capWorkshop.mdx";
 
 /**
  * This is where posts can be published or unpublished. All posts in the array
  * below are published.
  */
 export const allPosts = [
-  capTheorem,
   dockerResources,
   jsBuild,
   gitHelp,
