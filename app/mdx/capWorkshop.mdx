@@ -4,6 +4,8 @@ description: 'Learn about the CAP Theorem, and two related database concepts: "A
 created: 2022-12-09
 ---
 
+import { CodeSample } from '../components/codeSample.tsx';
+
 # CAP Theorem Workshop
 
 In mathematics, a theorem is a fact that can be proven to be true. For example,
@@ -89,8 +91,7 @@ request, and cannot use concurrency because of the consistency requirement.
 
 Availability is whether or not the service is able to receive and respond to
 requests from clients. Availability is usually expressed as a percentage of
-time. For example, a service that is 80% available will only be online 80% of
-the time.
+time ("99.9% availability").
 
 For most services, there is also some threshold of latency where the service
 may as well be unavailable. If a web browser request timeout duration is 30
@@ -109,9 +110,11 @@ inevitable that it will take more than 30 seconds to service a request.
 It sounds a bit contrived but consider such a system in China (which probably
 does exist!).
 
-```
+<CodeSample>
+```text
 1.4 billion people * 255 bytes per name = 357 terabytes
 ```
+</CodeSample>
 
 Even with the concession of unlimited RAM and binary search, good luck scanning
 357 terabytes of names for duplicates. You ain't gonna finish in 30 seconds.
@@ -139,11 +142,10 @@ the stupid reason we thought we couldn't partition:
 Looks like it's time for a conversation with boss man. If consistency and
 availability are important, we must partition. Our main issue is that every new
 name forces us to stop the world and check every existing name. For a registry
-in the U.S. (_I'll step away from China for my lack of knowledge of Mandarin_),
-we can easily partition our names into 26 data stores based on the first
-letter! If that's still too much data, we can partition based on the first two
-letters. Names starting with `Ja` can go into a different database than those
-starting with `Jo`.
+in the English, we can easily partition our names into 26 data stores based on
+the first letter! If that's still too much data, we can partition based on the
+first two letters. Names starting with `Ja` can go into a different database
+than those starting with `Jo`.
 
 Partitioning always implies the need for some additional logic that we will
 take responsibility for so that we visit the right data for the right request.
@@ -151,9 +153,8 @@ If that logic is easy to write, like in our naming registry, we have great
 partition tolerance and we can provide both consistency and availability
 through partitioning.
 
-Partitioning is probably the most complex part of the CAP Theorem. Remember
-that there are systems that just can't be partitioned, or can't be partitioned
-well. With that in mind, let's talk about the grey area in detail.
+Partitioning is probably the most complex part of the CAP Theorem. Remember,
+some data can't be effectively partitioned.
 
 ## CAP is not All or Nothing
 
