@@ -13,7 +13,7 @@ export IMAGE=$(CONTAINER)
 
 .PHONY: dev
 dev:
-	docker-compose \
+	docker compose \
 		-f docker-compose.yml \
 		-f docker-compose.dev.yml \
 		up -d --build
@@ -22,7 +22,7 @@ dev:
 
 .PHONY: start
 start:
-	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+	docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 
 .PHONY: deploy
@@ -40,7 +40,7 @@ push:
 
 .PHONY: debug
 debug:
-	docker-compose \
+	docker compose \
 		-f docker-compose.yml \
 		-f docker-compose.dev.yml \
 		-f docker-compose.debug.yml \
@@ -65,8 +65,8 @@ endif
 	yarn typecheck
 	yarn test run
 ifdef CI
-	docker-compose pull
-	docker-compose up -d
+	docker compose pull
+	docker compose up -d
 endif
 	make wait
 	yarn cypress
