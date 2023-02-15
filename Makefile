@@ -11,12 +11,18 @@ CONTAINER=$(DOCKER_ACCOUNT)/$(CONTAINER_NAME):$(TAG)
 export IMAGE=$(CONTAINER)
 
 
-.PHONY: start
-start:
+.PHONY: dev
+dev:
 	docker-compose \
 		-f docker-compose.yml \
 		-f docker-compose.dev.yml \
 		up -d --build
+
+
+
+.PHONY: start
+start:
+	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 
 .PHONY: deploy
