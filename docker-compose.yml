@@ -8,19 +8,13 @@ services:
     links:
       - db
     environment:
-      DATABASE_URL: postgresql://app:app@db/app
-      ADMIN_PASSWORD: pass
-      SESSION_SECRET: anything
-      EMAIL_PASSWORD: ${JACK_WEBSITE_EMAIL_PASSWORD:-nopass}
-      EMAIL_SENDING_ENABLED: 1
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/app
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET}
+      EMAIL_PASSWORD: ${JACK_WEBSITE_EMAIL_PASSWORD}
   db:
     image: postgres:14
-    volumes:
-      - pg_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: app
-      POSTGRES_PASSWORD: app
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: app
-
-volumes:
-  pg_data:

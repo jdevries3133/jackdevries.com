@@ -5,6 +5,7 @@
   "license": "",
   "scripts": {
     "cypress": "cypress run",
+    "start": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
     "dev": "yarn prisma:deploy && yarn build:tailwind && concurrently --names remix,tailwind \"PORT=8000 node --inspect=0.0.0.0:9229 ./node_modules/.bin/remix dev --sourcemap\" \"yarn build:tailwind --watch\"",
     "cypress:dev": "cypress open --browser chrome --e2e",
     "production": "yarn prisma:deploy && PORT=8000 remix-serve build",
