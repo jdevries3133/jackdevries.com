@@ -1,4 +1,5 @@
-import { ActionFunction, Form, useTransition } from "remix";
+import { Form, useTransition } from "@remix-run/react";
+import { ActionFunction } from "@remix-run/node";
 import prisma from "~/prisma.server";
 import { validateSlug } from "~/services/post";
 import { Loading } from "./loading";
@@ -33,7 +34,7 @@ export const CommentForm: React.FC = () => {
       <label className="text-sm">
         your name
         <input
-          className="block rounded focus:ring-2 focus:ring-primary-200 focus:outline-none"
+          className="block rounded focus:outline-none focus:ring-2 focus:ring-primary-200"
           type="text"
           name="author"
         />
@@ -41,13 +42,13 @@ export const CommentForm: React.FC = () => {
       <label className="text-sm">
         comment
         <textarea
-          className="w-full px-3 py-2 text-gray-700 border rounded focus:ring-2 focus:ring-primary-200 focus:outline-none"
+          className="w-full rounded border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-200"
           name="content"
           rows={4}
         ></textarea>
       </label>
       <button
-        className="block text-base p-1 m-1 bg-primary-100 rounded hover:bg-primary-200 focus:ring-primary-400"
+        className="m-1 block rounded bg-primary-100 p-1 text-base hover:bg-primary-200 focus:ring-primary-400"
         type="submit"
       >
         submit

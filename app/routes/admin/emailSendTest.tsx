@@ -1,4 +1,5 @@
-import { ActionArgs, Form, useActionData, useTransition } from "remix";
+import { Form, useActionData, useTransition } from "@remix-run/react";
+import { ActionArgs } from "@remix-run/node";
 import { Loading } from "~/components/loading";
 import { sendEmailRaw } from "~/services/email.server";
 
@@ -42,7 +43,7 @@ export default function EmailSendtest() {
   const { state } = useTransition();
   const msg = useActionData<ReturnType<typeof action>>();
   return (
-    <div className="w-full flex justify-center">
+    <div className="flex w-full justify-center">
       <div className="prose">
         <p>
           Submitting this form will directly send the email. It does not save
@@ -65,14 +66,14 @@ export default function EmailSendtest() {
             {msg &&
               "length" in msg &&
               msg.map((m) => (
-                <p key={m} className="py-0 my-0 text-red-500">
+                <p key={m} className="my-0 py-0 text-red-500">
                   {m}
                 </p>
               ))}
             <label>
               Subject{" "}
               <input
-                className="w-full mb-4"
+                className="mb-4 w-full"
                 defaultValue={defaultMessage.subject}
                 name="subject"
                 type="text"
@@ -81,7 +82,7 @@ export default function EmailSendtest() {
             <label>
               To{" "}
               <input
-                className="w-full mb-4"
+                className="mb-4 w-full"
                 defaultValue={defaultMessage.to}
                 name="to"
                 type="text"
@@ -90,7 +91,7 @@ export default function EmailSendtest() {
             <label>
               Cc{" "}
               <input
-                className="w-full mb-4"
+                className="mb-4 w-full"
                 defaultValue={defaultMessage.cc}
                 name="cc"
                 type="text"
@@ -99,7 +100,7 @@ export default function EmailSendtest() {
             <label>
               Bc{" "}
               <input
-                className="w-full mb-4"
+                className="mb-4 w-full"
                 defaultValue={defaultMessage.bcc}
                 name="bcc"
                 type="text"
@@ -108,7 +109,7 @@ export default function EmailSendtest() {
             <label>
               Reply-To{" "}
               <input
-                className="w-full mb-4"
+                className="mb-4 w-full"
                 defaultValue={defaultMessage.replyTo}
                 name="reply-to"
                 type="text"
@@ -117,7 +118,7 @@ export default function EmailSendtest() {
             <label>
               Message{" "}
               <textarea
-                className="w-full mb-4"
+                className="mb-4 w-full"
                 defaultValue={defaultMessage.text}
                 name="text"
               ></textarea>
@@ -126,7 +127,7 @@ export default function EmailSendtest() {
           {["submitting", "loading"].includes(state) ? (
             <Loading />
           ) : (
-            <button className="p-2 m-2 bg-gray-100">Submit</button>
+            <button className="m-2 bg-gray-100 p-2">Submit</button>
           )}
         </Form>
       </div>

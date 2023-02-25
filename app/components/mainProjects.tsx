@@ -139,7 +139,6 @@ export const MainProjects: React.FC = () => (
           </p>
         </div>
         <div className="py-3 flex flex-row justify-center gap-10">
-
           <a
             href="https://github.com/jdevries3133/song_maker_gallery"
             rel="noopener noreferrer"

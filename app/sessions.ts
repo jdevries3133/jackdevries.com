@@ -1,5 +1,5 @@
 // app/sessions.js
-import { createCookieSessionStorage } from "remix";
+import { createCookieSessionStorage } from "@remix-run/node";
 import { COOKIE_TIMEOUT, DOMAIN, SESSION_SECRET } from "./config.server";
 
 export const {

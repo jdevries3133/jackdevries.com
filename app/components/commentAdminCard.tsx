@@ -1,5 +1,5 @@
 import { Comment as CommentType } from "@prisma/client";
-import { Form, Link } from "remix";
+import { Form, Link } from "@remix-run/react";
 import { Comment } from "./comments";
 import { Button, DeleteButton } from "./buttons";
 

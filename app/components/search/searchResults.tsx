@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useLoaderData, useSubmit } from "remix";
+import { useLoaderData, useSubmit } from "@remix-run/react";
 import { useOnClickOutside } from "~/hooks/useOnClickOutside";
 import { PostCard } from "../postCard";
 

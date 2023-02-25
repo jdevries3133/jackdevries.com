@@ -1,10 +1,6 @@
 import { Comment } from "@prisma/client";
-import {
-  ActionFunction,
-  LoaderFunction,
-  useLoaderData,
-  useTransition,
-} from "remix";
+import { useLoaderData, useTransition } from "@remix-run/react";
+import { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { CommentAdminCard } from "~/components/commentAdminCard";
 import { Loading } from "~/components/loading";
 import prisma from "~/prisma.server";

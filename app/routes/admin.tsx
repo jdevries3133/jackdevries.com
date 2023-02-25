@@ -4,16 +4,18 @@
 
 import { PropsWithChildren } from "react";
 import {
-  useActionData,
-  Form,
   ActionFunction,
   LoaderFunction,
+  json,
+  redirect,
+} from "@remix-run/node";
+import {
   Outlet,
   useLoaderData,
-  json,
+  useActionData,
+  Form,
   Link,
-  redirect,
-} from "remix";
+} from "@remix-run/react";
 import { getSession, commitSession } from "~/sessions";
 
 /* if we are literally at `/admin` and authenticated, redirect to this route */
@@ -77,7 +79,7 @@ export default function Login() {
       <Outlet />
     </div>
   ) : (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <Form method="post">
         <p>{data}</p>
         <label>

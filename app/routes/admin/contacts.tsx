@@ -1,10 +1,5 @@
-import {
-  Form,
-  LoaderFunction,
-  useLoaderData,
-  ActionFunction,
-  useTransition,
-} from "remix";
+import { Form, useLoaderData, useTransition } from "@remix-run/react";
+import { ActionFunction, LoaderFunction } from "@remix-run/node";
 import prisma from "~/prisma.server";
 import { ContactInquiry } from "@prisma/client";
 import { DeleteButton } from "~/components/buttons";

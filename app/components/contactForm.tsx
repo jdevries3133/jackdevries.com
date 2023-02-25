@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, useTransition, useActionData } from "remix";
+import { Form, useTransition, useActionData } from "@remix-run/react";
 import { PrimaryButton } from "./buttons";
 
 const InnerForm = () => {

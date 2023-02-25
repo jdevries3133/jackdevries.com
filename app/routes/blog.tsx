@@ -1,4 +1,4 @@
-import { ActionArgs, LoaderFunction } from "remix";
+import { LoaderFunction } from "@remix-run/node";
 import {
   searchLoader,
   LoaderData as SearchLoaderData,

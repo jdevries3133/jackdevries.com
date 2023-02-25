@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import { ActionFunction, redirect } from "remix";
+import { ActionFunction, redirect } from "@remix-run/node";
 import { allPosts, getSerializableMetaData } from "~/services/post";
 import { mdxModToPlainText } from "~/services/post/toPlainText.server";
 

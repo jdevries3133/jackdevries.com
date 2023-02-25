@@ -1,6 +1,6 @@
 import type { ValidSlug } from "./types";
 import { moduleNameMapping } from "./collections";
-import { json } from "remix";
+import { json } from "@remix-run/node";
 
 export const isSlugValid = (slug: string | undefined): boolean => {
   return slug !== undefined && slug in moduleNameMapping;

@@ -1,7 +1,8 @@
 import { MetaFunction } from "@remix-run/node";
 
 import { HeroSection } from "~/components/heroSection";
-import { ActionFunction, useActionData } from "remix";
+import { ActionFunction } from "@remix-run/node";
+import { useActionData } from "@remix-run/react";
 import prisma from "~/prisma.server";
 import { MainProjects } from "~/components/mainProjects";
 import { OtherProjectsAndBio } from "~/components/otherProjectsAndBio";
