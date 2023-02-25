@@ -22,7 +22,10 @@ dev:
 
 .PHONY: start
 start:
-	docker compose -f docker-compose.yml -f docker-compose.prod.yml up
+	docker compose \
+		-f docker-compose.yml \
+		-f docker-compose.prod.yml \
+		up --build -d
 
 
 .PHONY: deploy
