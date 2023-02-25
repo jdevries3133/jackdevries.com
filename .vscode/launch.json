@@ -7,7 +7,7 @@
       "port": 9229,
       "request": "attach",
       "skipFiles": ["<node_internals>/**"],
-      "type": "node",
+      "type": "pwa-node",
       "sourceMaps": true,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/app",
