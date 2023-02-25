@@ -65,10 +65,6 @@ export const OtherProjectsAndBio: React.FC = () => (
         <li className="text-mineral text-sm">
           EA Poster Vote: a website for my students to vote on their favorite
           concert posters.{" "}
-          <span className="italic">
-            Live demo available upon request due to private student personal
-            information.{" "}
-          </span>
           <a href="https://github.com/jdevries3133/ea_music/">GitHub</a>
         </li>
         <li className="text-mineral text-sm">

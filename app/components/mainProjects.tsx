@@ -69,28 +69,6 @@ export const MainProjects: React.FC = () => (
 
         <div className="py-3 flex flex-row justify-center gap-10">
           <a
-            href="https://classNamefast.app"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <button
-              className="
-                  text-xl
-                  bg-primary-300
-                  rounded
-                  p-1
-                  text-mineral text-bold
-                  hover:bg-primary-400
-                  transition
-                  shadow-md
-                  hover:shadow-none
-                "
-            >
-              Live Site
-            </button>
-          </a>
-
-          <a
             href="https://github.com/jdevries3133/fast_grader"
             rel="noopener noreferrer"
             target="_blank"
@@ -107,7 +85,7 @@ export const MainProjects: React.FC = () => (
                   hover:shadow-none
                 "
             >
-              GitHub
+              View on GitHub
             </button>
           </a>
         </div>
@@ -161,27 +139,6 @@ export const MainProjects: React.FC = () => (
           </p>
         </div>
         <div className="py-3 flex flex-row justify-center gap-10">
-          <a
-            href="https://songmakergallery.com/"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <button
-              className="
-                  text-xl
-                  bg-primary-300
-                  rounded
-                  p-1
-                  text-mineral text-bold
-                  hover:bg-primary-400
-                  transition
-                  shadow-md
-                  hover:shadow-none
-                "
-            >
-              Live Site
-            </button>
-          </a>
 
           <a
             href="https://github.com/jdevries3133/song_maker_gallery"
@@ -200,7 +157,7 @@ export const MainProjects: React.FC = () => (
                   hover:shadow-none
                 "
             >
-              GitHub
+              View on GitHub
             </button>
           </a>
         </div>
