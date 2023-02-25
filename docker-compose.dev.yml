@@ -22,4 +22,4 @@ services:
 
 volumes:
   node_modules:
-  pg_data
+  pg_data:
