@@ -26,10 +26,10 @@
     "@heroicons/react": "^1.0.6",
     "@mdx-js/rollup": "^2.1.2",
     "@prisma/client": "^3.9.1",
-    "@remix-run/dev": "^1.7.2",
-    "@remix-run/node": "^1.7.2",
-    "@remix-run/react": "^1.7.2",
-    "@remix-run/serve": "^1.7.2",
+    "@remix-run/dev": "^1.13.0",
+    "@remix-run/node": "^1.13.0",
+    "@remix-run/react": "^1.13.0",
+    "@remix-run/serve": "^1.13.0",
     "@types/nodemailer": "^6.4.6",
     "accept-language-parser": "^1.5.0",
     "concurrently": "^7.0.0",
@@ -43,7 +43,7 @@
     "rehype-highlight": "^5.0.2",
     "rehype-slug": "^5.0.1",
     "rehype-toc": "^3.0.2",
-    "remix": "^1.7.2"
+    "remix": "^1.13.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.4.0",
@@ -58,8 +58,8 @@
     "happy-dom": "^4.0.1",
     "prettier": "^2.7.1",
     "tailwindcss": "^3.0.17",
-    "typescript": "^4.1.2",
-    "vite-tsconfig-paths": "^3.4.1",
+    "typescript": "4.9",
+    "vite-tsconfig-paths": "^4.0.5",
     "vitest": "^0.12.9"
   },
   "engines": {
