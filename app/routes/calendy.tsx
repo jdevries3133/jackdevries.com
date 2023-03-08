@@ -12,8 +12,8 @@ export default function Calendy() {
         <p>
           To schedule a 1:1, just send me a slack, or email me at{" "}
           <a href="mailto:jdevries3133@gmail.com">jdevries3133@gmail.com</a>. My
-          a slack sessions for CTD are still Tuesday 6pm-10pm EST. I will post
-          any availability updates here as necessary.
+          1:1 sessions for CTD are still Tuesday 6pm-10pm EST. I will post any
+          availability updates here as necessary.
         </p>
       </div>
     </DefaultPageContainer>
