@@ -4,7 +4,22 @@ import prisma from "~/prisma.server";
 import { validateSlug } from "~/services/post";
 import { Loading } from "./loading";
 
-export const actionId = "submit comment";
+/**
+ * I'm getting some slight spam; let's start a banned words list as a simple
+ * anti-spam system
+ */
+const BANNED_WORDS = [
+  'Baclofen',
+  'antib.webstarts.com'
+];
+
+function isAllowed(comment: string): boolean {
+  if (BANNED_WORDS.some((word) => comment.includes(word))) {
+    return false;
+  }
+
+  return true;
+}
 
 export const action: ActionFunction = async ({ request, params }) => {
   const slug = validateSlug(params.post);
@@ -12,7 +27,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const author = data.get("author");
   const content = data.get("content");
 
-  if (content) {
+  if (content && typeof content === 'string' && isAllowed(content)) {
     await prisma.comment.create({
       data: {
         author: author as string | null,
