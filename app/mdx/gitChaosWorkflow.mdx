@@ -1,0 +1,461 @@
+---
+title: Git Chaos Workflow
+description: A git workflow for the chaotic and maybe neurotic among us
+thumbnail: /static/git.webp
+created: 2023-03-26
+---
+
+import { Image } from "../components/image";
+
+# Git Chaos Workflow
+
+A git workflow to embrace your inner chaos, keep history clean, and get a lot
+done.
+
+My other nick-name for this workflow is "personalized trunk-based development."
+It is a rebase-heavy git workflow where you peel commits off a working branch
+into code-review branches rather than working on code-review branches directly.
+
+This workflow is great for folks who find their feature branches polluted with
+out-of-band changes, or folks who want to maintain high velocity on large
+features while maintaining a high degree of incrementalism and CI/CD.
+
+## Why Chaos?
+
+Chaos is a bit tounge-in-cheek; I really mean [flow
+state.](https://en.wikipedia.org/wiki/Flow_(psychology)) When I am working, I
+want to ensure I can remain focused. Counterintuitively, they git workflow of
+one-feature-per-branch actually undermines this focus for me, because:
+
+- I worry that a change will broaden the scope of a code review, and slow down
+  the release of a feature
+- I worry that rewording some docs, doing a bit of refactoring, or other chores
+  will pollute my feature branch
+
+Maybe it's a feeling more than a truth, but I do feel most productive when I
+have a workflow that isolates me from these non-technical thoughts. If I can
+just stay in the codebase, keep my head down, and work (even if I sometimes
+float away from my task along the way), I accomplish more. Nonetheless, my
+coworkers will be sad if I open a mammoth code review with 18 different things
+going on. Not only that, but I'll often reject my own changes when looking at
+them in hindsight! At the end of the day, my chaotic nature seems to run at
+odds with a traditional feature-branching workflow.
+
+## Big Features
+
+Another angle through which to introduce this workflow is thinking about big,
+complicated features. I am a big fan of David Farley, who preaches about
+incrementalism in software engineering (among other things). I really buy into
+the idea that delivering a whole bunch of small patches continuously is an
+ideal thing to do. Why?
+
+- Users get to see results faster
+- When code is checked in, everyone starts integrating against it; there are
+  less opportunities for a shifting codebase to have a bad impact on your work
+  if you get your work in there ASAP
+- Bugs and other surprises present themselves smoother, and in the context of a
+  smaller patch
+- The code review process is smoother; a smaller change gets more scrutiny and
+  better testing before release
+
+Incrementalism when building big things sounds great, but the
+git-feature-branch workflow doesn't really set us up for being very successful
+here. Every time you send your feature branch to code review, you get blocked
+until the code review is completed and the changeset is checked into the main
+branch. Of course, you could create a different branch to continue working, but
+now you have 2 branches for one feature. When you add a fix that came up in
+code review, will you port it to your other working branch? What happens when
+you get merge conflicts against the main branch? There are ways to deal with
+these problems, and I've done them (cherry-pick the change, and rebase instead
+of merge are good solutions to the last two questions), but the ergonomics are
+not good.
+
+## Feature Branches Don't Work for Me
+
+Taking these two problems together; I'm not vibing with feature branches.
+Diverging branches for a feature (the second issue) is not that bad, but when
+you add a big chunk of chores and fixes into the mix, feature branches are a
+pain.
+
+# The Workflow
+
+1. Init: Create a working branch; I usually start with `<feature>_working`
+2. Work: Maintain a "wip" commit on the head of the working branch; work freely
+   and chaotically
+3. Prune: grab a group of your wip changes that make sense, and give them a name
+   -- make a commit! It can be a subset of your work-in-progress changes
+4. Repeat: build up a history of small, atomic changes
+5. Rebase: as needed, squash new changes into the old commits they belong to
+6. CR: send some stable changes to code review
+
+## Wait, Why??
+
+You never need to stop working. The code reviews are in the rear view mirror.
+Your working branch is decoupled from the code review branch!
+
+The scope of changes in your working branch can be huge. You can make docs
+changes, you can change the build system, you can do whatever the hell you
+want! Have a dev tooling change you're not sure about? Let it hang out on your
+working branch for 2 weeks to prove itself!
+
+Your work is of a higher quality. Want to know a good way to ensure your
+feature doesn't have bugs? Build 5 additional features on top of it!! As you
+work, you'll amend to old commits. At some point, you'll stop amending to old
+commits because the code is right. You are exercising your changes way harder
+if you keep building against them for a bit before sending them to code review.
+I'm not saying you should hold back changes for a week! But if you're spent 3
+hours developing _on top_ of a previous commit, where all your latest work also
+tests that old commit, you exercise your code very hard!
+
+Smaller and faster deploys lead to higher velocity. In this workflow, code
+reviews are happening in the background, they are not a blocker. All those
+stable commits trailing behind your latest work can be shipped as soon as you
+think they are stable, instead of waiting for the feature to be done. Your
+colleagues will be reviewing smaller pieces of your code more often. Code
+reviews will have 2-3 comments instead of 40-50, and the guidance you glean
+from code reviews will produce small course-corrections along the way instead
+of huge dramatic reckonings.
+
+Your team can be in the loop on your work! I do a `gwip; git push --force`
+every time I task switch. Since my working branch _is not_ going through code
+review, there's no harm in pushing broken changes. In fact, there's a benefit
+to pushing changes - broken or not: my colleagues have 100% visibility into
+what I am up to. The main use-case here is that I can refer a colleague to my
+working branch when they are reviewing a single commit in the working branch.
+Less frequently, my work might need to integrate with someone else's. They can
+see my working branch and even cherry-pick commits from it if needed.
+
+## OK, How?
+
+Let's dive into the git-fu you'll need to get this happening!
+
+## Init: Create a Working Branch
+
+I discovered this workflow when working on a big feature. I understood that if
+I forked my code reviews away from the working branch, life would be better,
+but I'm increasingly wanting to more further and further towards
+"mono-branches." Choose a branch name that works for you; I suggest
+`<something>_working`.
+
+## Work: `gwip`; `gunwip`
+
+```bash
+alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"'
+```
+
+On feature branches, make a work-in-progress commit with `gwip`. Later, when
+you revisit it, `gunwip` to restore your working-tree state. If there's a good
+amount of work-in-progress, force-push your wip commit to a remote branch every
+time to keep your work backed up!
+
+**Critically,** every time you stop working, dump all the thoughts in your head
+into the source file you're in:
+
+```javascript
+// Typical `gwip` commit
+
+function foo() {
+  // ...
+}
+
+function bar() {
+  // ...
+
+  turns out that foo does not have support for so and so.got to to figure out
+  whether there's a workaround, ad then I can ge back to seinghow to get
+  the birthday into the profile pag
+}
+```
+
+See the typos? That's fine! Notice it's not commented out? Good! That chunk of
+text will light up like a Christmas tree next time you check out to my branch.
+It'll break the build; you won't even be able to start working until you look
+at it.
+
+## Prune: Commit Working Changes
+
+Every time you `gunwip`, you'll see this:
+
+```text
+Unstaged changes after reset:
+M       app/mdx/index.ts
+D       app/services/post/collections.ts
+M       app/services/post/getters.ts
+D       app/services/post/index.ts
+M       app/services/post/toPlainText.server.ts
+M       app/services/post/toPlainText.test.ts
+M       app/services/post/types.ts
+D       app/services/post/validateMdxModule.test.tsx
+M       app/services/post/validateMdxModule.ts
+D       app/services/post/validateSlug.test.ts
+D       app/services/post/validateSlug.ts
+```
+
+Dang, that's a lot of changes. Look through them. Try to stage a logical group
+of changes; big or small, and make a commit. This is what the whole staged /
+unstaged thing is for; you sift through you changes and try to get a nice and
+wisely grouped change into staging.
+
+If you commit a subset of your changes, it's important to ensure that commit is
+stable in isolation before moving on. After creating the named commit, do a
+`gwip`, to save the remainder of your changes. Then, checkout directly to your
+new commit by it's commit hash. Do some testing, make sure you've created
+something stable.
+
+Thinking of committing as a process of pruning your working tree has helped me
+make commits that are more focused, stable, and atomic. I think it's pretty
+much impossible to know what a commit should be until the changeset is staring
+you in the face, so there's really no point trying to plan ahead. Just do your
+work, and then figure out what the commits should be during this phase of
+reflection.
+
+## Continue
+
+Keep working in this fashion, building up a blob of "wip" work, and then
+committing subsets of it as frequently as you can. The goal is to build up a
+history of _isolated, separated, and stable changes._ Every one of these
+commits could be code-reviewed and checked into the main branch independently
+if need be, which is sweet!
+
+## Interactive Rebase
+
+As soon as you build up a history of 2 or 3 commits, you're going to need to
+make a change to one of those commits. Remember, we don't think about this
+while we're in the zone working. Instead, we think about this during the
+[pruning step](#prune-working-changes). If you have a change that belongs with
+a previous commit, it's easy to squash that into the old commit, even if the
+old commit isn't the latest commit on your branch.
+
+Here's a visual of what we're trying to accomplish; we will revisit this after
+a review on interactive rebasing:
+
+<Image
+  src="/static/gitChaosRebaseVis.svg"
+  alt="Visual of what happens during the interactive rebase step"
+/>
+
+### Rebase 101
+
+First, you can interactively rebase over all the commits you've made so far:
+
+```bash
+MAIN_BRANCH=main  # or "master"
+
+# This gives you the ref of the last commit your branch and main had in common
+git merge-base HEAD $MAIN_BRANCH  # or `master`
+98ec81a75cd66ba4bb293901c948c5e962c76bd5
+```
+
+We can use that as a base on which we'll rebase. This is unlike `git rebase
+main`, which might pull new commits from main in underneath our development
+branch; here, we'll simply get the chance to manhandle the history we've
+created so far:
+
+```bash
+git rebase -i $(git merge-base $MAIN_BRANCH HEAD)
+```
+
+I have an alias for these two steps together, which I use _very_ often:
+
+```bash
+MAIN_BRANCH=main
+alias grbpr='git rebase -i $(git merge-base $MAIN_BRANCH HEAD)'
+```
+
+Now, you can take full control over the history you've created. Remember, this
+is on a feature branch that you own! For me, this is all happening before I've
+even opened a merge request; no one is going to be bothered by destructive
+changes to git history. In fact, you now have an opportunity to tell the most
+clear and useful story possible with your git history.
+
+
+I've been using the workflow I'm writing about while authoring this post
+itself. Here's what I see now when I run my `grbpr` alias:
+
+```bash
+pick fd8b9dc register blog post
+pick 8593fe5 write blog post
+pick 044c244 add rebase visualization static content
+pick f1333b8 --wip-- [skip ci]
+```
+
+And git gives some helpful details at the bottom of the rebase text file
+showing all the things we can do:
+
+```text
+# Rebase 98ec81a..38d52f4 onto 98ec81a (5 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup [-C | -c] <commit> = like "squash" but keep only the previous
+#                    commit's log message, unless -C is used, in which case
+#                    keep only this commit's message; -c is same as -C but
+#                    opens the editor
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+#         create a merge commit using the original merge commit's
+#         message (or the oneline, if no original merge commit was
+#         specified); use -c <commit> to reword the commit message
+# u, update-ref <ref> = track a placeholder for the <ref> to be updated
+#                       to this position in the new commits. The <ref> is
+#                       updated at the end of the rebase
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+```
+
+You can make any change you'd like to history at this point: reordering
+commits, performing ad-hoc edits to any commit in history, etc. 
+
+### Revising Past Commits
+
+Now, we know how we can achieve our goal: making amendments to past commits on
+our working branch:
+
+<Image
+  src="/static/gitChaosRebaseVis.svg"
+  alt="Visual of what happens during the interactive rebase step"
+/>
+
+Making this happen is an easy process:
+
+1. Make a temporary commit with only the changes you want to amend to "Commit
+   1"
+2. Run `grbpr`, and reorder the lines so that your temporary "amendment" commit
+   comes right after the target commit ("Commit 1"). This might cause merge
+   conflicts. It will certainly cause merge conflicts if your amendment commit
+   touches lines that were changed in "Commit 2," or "Commit 3."
+3. With your commits in the right order, `grbpr` again, and squash your
+   amendment into the target commit
+
+You can do steps #2 and #3 in the same rebase operation, but I recommend
+keeping rebases really simple if this process is new to you.
+
+## Code Review
+
+As I mentioned earlier, at some point your past commits become stable.
+Generally, as soon as I have a unit of work that is stable, I'll send it out
+for code review.
+
+To do this, start by checking out to a _real_ feature branch!
+
+```bash
+# From your working branch
+git checkout -b completed_feature
+```
+
+Now, `completed_feature` is a copy of your working branch, but you only want to
+send a few stable commits to code review, since the whole feature is not done
+yet. Do another `grbpr`, but this time drop all the commits you do not want to
+merge by deleting those lines from the rebase plan.
+
+Finally, push these stable commits to a remote branch, and create a merge or
+pull request!
+
+## Now What?
+
+The story isn't quite over yet. Two things will now happen:
+
+1. Most likely, you'll receive some feedback during the code review process
+   that needs to be incorporated
+2. Eventually, these commits will land on the main branch, and you'll need to
+   update your working branch
+
+I think these two things are where _I would have thought_ this approach would
+break down. You just have a different flavor of the diverging branches problem,
+and who the hell knows what happens to this magical working branch when 3/7 of
+it finds itself on master. But I was wrong! Dealing with both of these things
+is super easy, it turns out.
+
+### Force-Push Option
+
+There are two ways to incorporate feedback. The first is:
+
+1. On your working branch, add the `fix` commit
+2. On your working branch, squash the fix into the original feature
+3. Re-create your feature branch
+4. Force-push to update the merge/pull request
+
+This is usually what I do. As long as the merge-base hasn't changed, GitLab and
+GitHub will do a good job at providing the reviewer of a diff in this
+situation. Still, it can be a bit more opaque for the reviewer compared to
+just pushing an additional commit. I only do this if the total change is small
+enough that I expect the reviewer will probably review the whole diff again
+anyway.
+
+The nice thing here is that the patch-id of the commits on the feature branch
+and your working branch match. That means they will also match when the feature
+branch is merged into the main branch. That means that when you run `git
+rebase $MAIN_BRANCH` from your working branch _after_ the feature branch is
+merged, git will do something magical: [skip previously applied
+commits](https://stackoverflow.com/a/52789919). The effect here is that the
+commits on your working branch that have been merged into the main branch will
+"disappear" from your working branch during the rebase process. This is
+awesome, because your working branch commits just dissolve away beneath you as
+they land on master which is exactly the experience we want.
+
+The downside is that force-pushing to code review branches creates a pretty
+hostile experience for the reviewer. I have basically stopped doing this for
+that reason, unless the CR is _tiny_ (< 500 lines is my rough heuristic).
+
+### Fix Commit Option
+
+Creating fix commits is much more reviewer-friendly:
+
+1. Create and push a fix commit on the feature branch as usual to address the
+   reviewer's concern
+2. From your working branch, `git rebase feature_branch`
+
+This gives the reviewer what they probably want: a clear fix commit where they
+can see the changes they request being implemented. However, this also means
+that the reviewer is probably going to squash and merge, which will kind of
+ruin your day. At that point, the commit that lands on the main branch does not
+exist in your working branch, so git might not do "the smart thing" when you
+rebase on main.
+
+You can generally recover by squashing the commits on your working branch in
+the same way that GitHub or GitLab did yourself. Your working branch might look
+like this:
+
+```text
+pick 00000 feat: feature that has been merged
+squash 00000 fix: address reviewer concern
+pick 00000 feat: the next thing on my working branch
+```
+
+Squashing the feature and all of the following fixes will give you the same
+patch that GitHub / GitLab created. Then, you can `git rebase $MAIN_BRANCH`
+from your working branch, and it should all work out.
+
+### Communication
+
+Sometimes, the situation gets complex enough that we ultimately need to
+communicate with the reviewer a bit. The previous scenario assumes a
+squash-and-merge, but with this workflow, you're creating some immaculate
+history, and it's not smart to destroy it for no reason.
+
+You probably want to push tiny commits that encapsulate response to the
+reviewer's concerns, but then intelligently backport those changes into the
+feature commits they belong with before merging into the main branch.
+
+# That's It!
+
+I hope you enjoy this working-branch-based workflow. If the ideas are
+appealing, see also [trunk-based
+development](https://trunkbaseddevelopment.com/). Ideas from that school of
+thought inspired this workflow; I see it as sort of a trunk-based
+development at the personal level.
+
+Thanks for reading!
