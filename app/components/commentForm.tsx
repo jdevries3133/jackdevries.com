@@ -10,7 +10,8 @@ import { Loading } from "./loading";
  */
 const BANNED_WORDS = [
   'Baclofen',
-  'antib.webstarts.com'
+  'antib.webstarts.com',
+  'neurontin'
 ];
 
 function isAllowed(comment: string): boolean {
