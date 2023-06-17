@@ -28,15 +28,16 @@ export const action: ActionFunction = async ({ request, params }) => {
   const author = data.get("author");
   const content = data.get("content");
 
-  if (content && typeof content === 'string' && isAllowed(content)) {
-    await prisma.comment.create({
-      data: {
-        author: author as string | null,
-        content: content as string,
-        postSlug: slug,
-      },
-    });
-  }
+  // Disable commenting for now -- too much spam. Gotta add authentication
+  // if (content && typeof content === 'string' && isAllowed(content)) {
+  //   await prisma.comment.create({
+  //     data: {
+  //       author: author as string | null,
+  //       content: content as string,
+  //       postSlug: slug,
+  //     },
+  //   });
+  // }
 
   return null;
 };
