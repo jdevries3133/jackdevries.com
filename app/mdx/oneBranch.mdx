@@ -1,0 +1,365 @@
+---
+title: One Branch to Rule them All
+description: Prepare for your git workflow to change forever
+created: 2023-05-15
+thumbnail: /static/git.webp
+---
+
+import { Image } from '../components/image.tsx';
+import { CodeSample } from '../components/codeSample.tsx';
+
+# One Branch to Rule Them All
+
+For about 2 months now, I've been using 1 development branch at work.
+
+Yes, one. "`git checkout jack`" -- that's it.
+
+How did I get here, why the hell am I doing this, how does it work, and is it
+worth it?
+
+## Companion Repo
+
+[jdevries3133/one_branch_workflow_demo](https://github.com/jdevries3133/one_branch_workflow_demo)
+is a tutorial for the git workflow I'll present here.
+
+## Hard Problems
+
+Git is a great thing, but there are some hard problems that used to seem
+inescapable;
+
+- How do I keep track of all of my work-in-progress changes, and their status
+  towards being merged into the main branch?
+- How can I ensure that all my development work stays up-to-date with the main
+  branch?
+- How do I work incrementally without blocking myself on code review?
+- How do I reduce distraction, and maintain a flow state for longer?
+- How do I increase the throughput with which my changes move through code
+  review?
+- How do I continue working on multiple changes with a single shared unmerged
+  dependency, without scope-bloat, where all 3 changes meld into one inseprable
+  blob?
+- How can I engage with git for all that it's worth, so that it becomes a
+  powerful tool for managing, partitioning, reordering, or even abandoning my
+  own changes?
+- How can I reduce the scope of total unmerged and unintegrated code across my
+  development branches?
+
+This is how I got here. I wasn't satisfied with how any of this stuff was
+going.
+
+## Big Feature, Inspiration
+
+I had to work on a big feature. Many thousands of lines when all was said and
+done. Lots of moving parts. Tight deadlines. Gotta go fast.
+
+In the past, I used the feature branching strategy that we all know and love:
+
+<Image
+  src="/static/feature-branching.svg"
+  alt="Visualization of feature branching"
+/>
+
+This works _all right,_ after all, it is what most developers do on a
+day-to-day basis, so it can't be a totally broken workflow, but I'm sure
+everyone feels this pain:
+
+<Image
+  src="/static/branchWorkflowOuch.svg"
+  alt="Visualization of concurrent dependent changes, where things go wrong"
+/>
+
+But that's not so bad, you say, you need to finish the first form before
+starting the second one anyway! Incrementalism is good; this is fine.
+
+Except reality actually looks like this:
+
+<Image
+  src="/static/branchWorkflowExtraOuch.svg"
+  alt="Visualization of concurrent dependent changes, where things go wrong"
+/>
+
+This double-red time, where code review is happening, and you are also not
+wanting to continue work is the real killer. There are a few common places that
+developers go from here, but I'd argue they are all bad solutions, for
+different reasons.
+
+### Bad Solution: Task Switch
+
+Here's the easiest and most straightforward solution - when you have a unit of
+changes ready to ship, switch to the next task. The problem here is that if
+you practice incrementalism, you probably have a delivery-ready unit of changes
+every 1 hour on average. Nonetheless, you probably don't enter into the code
+review process once each hour because it's heavy and slow, and you know that if
+you do so, you'll be slowed down, so you don't.
+
+A further problem is that I'd argue it's not healthy to conflate the process of
+spewing code from your brain and organizing code into change-sets. As
+programmers, we need to take steps to harness our mind's [flow
+state](https://en.wikipedia.org/wiki/Flow_(psychology)). Distractions are
+poison, and even though you might not realize it, feature-branching is
+poisoning your flow!
+
+> Hm, I'm totally in the zone, but I'm starting to accumulate a lot of unstaged
+> changes. Should I really start this refactor now, or should I wait for later.
+> Oh look, there's a bug here - um, well, I won't fix it now, I'll just add it
+> to my task list to die-- uh, I mean, I'm sure I'll get to it. Oh look, this
+> formatting is messed up. Well, I don't want to bloat the diff, I'll just do
+> that later.
+
+That's a flow state about as smooth as black tar... What if, instead, you could
+forget about these concerns, and fearlessly change whatever the hell you want
+without screwing everything up?
+
+### Bad Solution: Keep Adding Commits
+
+This sort of works, but there should be some obvious drawbacks here. First, in
+the spirit of true incrementalism, every pull request should be as small as
+possible. As soon as you add 1 commit into one pull request that could have
+been separated, I'd argue you're making a mistake and undermining the
+likelihood that the change will be bug-free and successful.
+
+More importantly, your reviewer is probably not a fan of this. It's possible to
+add commits to a certain extent, but at some point the reviewer does need to
+look at a stable set of changes, test them, and think about them. In other
+words, when you're in the midst of the code review process, that branch really
+doesn't belong to you, and you should keep it stable. Again, humans make tons
+of mistakes and this is about giving everyone the best possible chance of
+success. Your reviewer will miss more things if they're trying to review a
+moving target.
+
+### Bad Solution: Branch and Merge Your Heart Out
+
+This is the best bad solution of them all. With a branching workflow, we can
+have `feature_part_1`, `feature_part_2`, etc. If you add a commit to part 1
+(code review feedback), you can simply merge it into part 2. When part 1 is
+merged into master, you can merge master into part 2, and you'll be in a good
+place.
+
+The problem with branching strategies in git, though, is that they essentially
+treat history as immutable, and I make too many mistakes for history to be
+immutable. In the end, you're going to have tons of broken commits in your git
+history, because every little fix is going to require a follow-up commit, and
+the parent of that fix is a broken commit that will live on forever. If I did
+this, I'd have more bad commits in git history than good ones, at which point
+the history itself becomes useless. Not only that, but git history on the main
+branch will include tons of revisions that were never in production. Do those
+commits really matter for anyone after the code review is over?
+
+If you want to be able to change history on your development branches, this
+approach does not work.
+
+## Enter: One-Branch Workflow
+
+The good solution is to just use one branch. First, I'll do a deep dive on the
+mechanics in case you're skeptical that this is possible. Then, I'll go through
+the benefits. Here is what a day in the life of the one-branch workflow looks
+like:
+
+### Sidebar: `grbpr`
+
+`grbpr` is an alias I have in my shell; it maps to:
+
+```bash
+# "git rebase for a pull request"
+alias grbpr='git rebase -i $(git merge-base main HEAD)'
+```
+
+If that's confusing, check out
+[jdevries3133/one_branch_workflow_demo](https://github.com/jdevries3133/one_branch_workflow_demo),
+where it's broken down in detail.
+
+#### Step 1: Absolute Chaos
+
+You are now free to work as chaotically as you always wanted. You can make
+temporary commits to save your work under a name, or, don't commit at all and
+just work! The process of code writing is now decoupled from the actual changes
+that are going to end up in code review, so it doesn't matter anymore, just
+have fun! Fix docs, refactor as you go, and of course work on new features. The
+unprecedented amount of freedom here is a main advantage to this workflow (but
+not the only one).
+
+#### Step 2: Reflect
+
+Whether you've made small commits along the way or built up a glob of unstaged
+changes, at some point you'll know it's time to take a step back and organize
+your thoughts into commits. This time, the commits you're making are headed for
+prod, so you might write some detailed commit messages and make final fixups as
+needed.
+
+#### Step 3: Code Review
+
+To get a commit into code review is a simple process;
+
+1. checkout from your dev branch to a feature branch, named after the commit
+2. drop all commits except the one you intend to send to code review (via
+   `grbpr`)
+3. push to create a remote branch
+4. open a merge request / pull request
+
+#### Step 4: Feedback from Code Review
+
+Often, in response to code review, you'll need to make some additional changes.
+In this workflow;
+
+1. checkout to your dev branch
+2. make the changes
+3. create a temporary, "fixup" commit
+4. use `grbpr` to reorder commits so that the fixup is adjacent to the commit
+   it's associated with, and squash the fixups into the feature commit
+5. checkout to the feature branch (the one under code review)
+6. hard-reset it to your dev branch
+7. repeat step 3 - drop all commits except the one for this code review
+8. force-push to update the code review branch
+
+This step is a bit tedious, so I have some shell aliases to help me;
+
+<CodeSample>
+```bash
+# for squashing fixups back into the commit they belong to
+alias gfix='git add -A; git commit -m "fixup"; grbpr'
+
+# "git sync" - for syncing the feature branch with your cannonical branch
+function gs!() {
+  git reset --hard jack # insert your dev branch name here
+  grbpr
+}
+```
+</CodeSample>
+
+#### Step _always_: Sync with `main`
+
+Technically, this happens continuously throughout the last 4 steps. To sync
+your development branch with `main`, just run `git rebase main`. I do this
+pretty much every time I blink.
+
+Here, we encounter some more massive advantages to this workflow: visibility
+over your own in-progress changes. Git will notify you when your commits have
+merged into the main branch during rebase; it'll say something like, `warning:
+skipped previously applied commit f899409`. You can `git show f899409` to see
+what that commit is. More importantly, if you do `git log --oneline --graph`,
+you can see all your in-progress work at a glance.
+
+## Advantages
+
+Now that the mechanics of the workflow have been spelled out, let's look back
+at the problems stated in the beginning, and review the advantages of this
+workflow.
+
+### Keeping Track of In-Progress Work
+
+`git log --oneline --graph` allows you to quickly visualize the commits on your
+dev branch, which encapsulates all of your in-progress changes
+
+```text
+* 9173a83 (HEAD -> jack) feat: support for mermaid charts
+* ef94456 fix: missing react key in navbar
+*   3bb1a47 (origin/main, main) Merge pull request #63 from Code-the-Dream-School/newerRails
+|\  
+| * ef5c1ed prettier on newer md files
+| * c06b434 get correct rails files
+|/  
+*   c5a16f1 Merge pull request #61 from Code-the-Dream-School/fixRailsAgain
+```
+
+At a glance, I can see that `ef94456` and `9173a83` are in-progress by looking
+at the commits on my dev branch after `main`.
+
+### Ensuring All Development Work is In-Sync with Main Branch
+
+Feature branches that you're not working on quickly become stale, and getting a
+random ping from a coworker to deal with a merge conflict breaks you out of
+your flow. With this workflow, every time you `git rebase main`, you integrate
+all of your changes with the main branch and immediately deal with any merge
+conflicts that might have occurred. True, sometimes you'll forget to actually
+update the downstream branch under code review, but that's now a quick and
+simple process since you've already resolved the merge conflict.
+
+### Working Incrementally without being Blocked on Code Review
+
+Here's probably the raison d'etre for this workflow. You can send commits as
+small as you want as frequently as you want to code review without ever slowing
+down.
+
+<Image
+  src="/static/oneBranchWorkflow.svg"
+  alt="Visualization of one-branch workflow"
+/>
+
+### Reduce Distractions, Improve Flow
+
+This was discussed in "Step 1: Absolute Chaos." You can think of your dev
+branch like a "work bench." It belongs to you, no one else will see it, and you
+can put whatever you want on there. This decoupling of your working state and
+the code review process means that you can stay focused on whatever you need to
+be doing without worrying about how it impacts the code review process.
+
+### Increase Throughput
+
+If you work smaller you will move faster. I am an unapologetic CI/CD
+evangelist. There is research like the State of DevOps Report to support that
+high-performing engineering teams engage in CI/CD best practices, and that
+shipping small changes as frequently as possible yields compounding benefits.
+
+More concretely, small and atomic commits are way easier to review. If you send
+your documentation changes in one commit, refactors in a few small patch
+commits, then the backend for your feature with integration tests, then the
+frontend for your feature with additional integration tests, each of those
+commits are going to be very easy and straightforward to review. If you did
+them all in one commit, it would be a nightmare.
+
+Plus, if you did them all in one commit, the amount of time to get the changes
+into prod is the time it takes to author the change PLUS the time it takes to
+review. On the other hand, in the one-branch workflow, authorship and review
+mostly happens concurrently. The documentation changes are reviewed and shipped
+while you do the first refactoring. The first refactoring goes out the door
+while as you're finishing up the second, etc.
+
+### Complex Change Dependencies
+
+Sometimes you can _almost_ separate a feature into 2 MRs, except that there's
+some shared change that couples them together, and you're unable to achieve
+separation, so you create a big heavy code review. Let's consider changes `A`,
+`B`, and `C`, where `B`, and `C` depends on `A`;
+
+```text
+A -> B -> C
+
+B depends on A
+C depends on A
+```
+
+In this workflow, `A` goes into code review _as soon as it's done,_ and you can
+continue working to start `B`. Certainly, until `A` merges, you can't open
+merge requests for `B` or `C`, but you can continuously work on top of your
+previous changes, such that building up complicated interdependent sequences of
+patches becomes a breeze.
+
+Not only that, but if you then author `D` having no dependencies, you can send
+that to code review even though the interdependent cluster of `A -> B` and `A
+-> C` is in your dev branch.
+
+### Using Git for All It's Worth
+
+In this workflow, I've had some staggering moments of understanding how awesome
+git can be. If I see a change that I don't want to pursue, I can just drop the
+commit. If I find a bug in a change, I can create a fix and squash back into a
+historical commit. If I need to, I can reorder commits. I can go back to an old
+commit and revise it, including splitting one old commit into 2 pieces! In this
+workflow, git's power as a version control system benefits you personally in
+your day-to-day work to control the chaos of your own in-flight changes.
+
+### Reduce Scope of Overall Unintegrated Code
+
+You dev branch represents all of the code you've authored that is in a pending
+state. You can see it, and you can feel it. You can easily measure it's size.
+You can take action to make it smaller if it starts to become too big.
+
+# Conclusion
+
+Surprisingly, the one-branch workflow is amazing albeit extremely
+counter-intuitive. Whether or not you adopt this specific workflow, be creative
+with your git branching strategies, and find the strategy that works for you.
+If you want to get more hands-on with the one-branch workflow, check out the
+companion repo to this blog post:
+[jdevries3133/one_branch_workflow_demo](https://github.com/jdevries3133/one_branch_workflow_demo)
+is a tutorial for the git workflow I'll present here.
