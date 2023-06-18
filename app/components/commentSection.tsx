@@ -4,6 +4,8 @@ import { Comment } from "./comments";
 
 export const CommentSection = () => {
   const { comments } = useLoaderData();
+  // Comments temporarily disabled -- too much spam
+  return null;
   return (
     <div className="bg-clay-400 rounded-b text-mineral-600 p-2">
       <h2 className="text-lg text-inherit">your thoughts?</h2>
