@@ -12,7 +12,6 @@ import * as vimRegex from "./vimRegex.mdx";
 import * as gitHelp from "./gitHelp.mdx";
 import * as jsBuild from "./javascriptTools.mdx";
 import * as dockerResources from "./dockerResources.mdx";
-import * as gitChaosWorkflow from "./gitChaosWorkflow.mdx";
 import * as ctdGitTips from "./ctdGitTips.mdx";
 import * as oneBranch from "./oneBranch.mdx";
 
@@ -23,7 +22,6 @@ import * as oneBranch from "./oneBranch.mdx";
 export const allPosts = [
   oneBranch,
   ctdGitTips,
-  gitChaosWorkflow,
   dockerResources,
   jsBuild,
   gitHelp,
