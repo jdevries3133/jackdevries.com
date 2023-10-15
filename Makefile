@@ -38,7 +38,12 @@ endif
 
 .PHONY: push
 push:
-	docker buildx build --pull --platform linux/amd64 --push -t $(CONTAINER) .
+	docker buildx build \
+		--platform linux/amd64 \
+		--cache-to type=registry,ref=$(DOCKER_ACCOUNT)/$(CONTAINER_NAME) \
+		--cache-from type=registry,ref=$(DOCKER_ACCOUNT)/$(CONTAINER_NAME) \
+		--push \
+		-t $(CONTAINER) .
 
 
 .PHONY: debug
