@@ -38,6 +38,10 @@ endif
 
 .PHONY: push
 push:
+ifdef CI
+	# We need to specify the docker driver in CI
+	docker buildx create --use
+endif
 	docker buildx build \
 		--platform linux/amd64 \
 		--cache-to type=registry,ref=$(DOCKER_ACCOUNT)/$(CONTAINER_NAME) \
