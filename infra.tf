@@ -48,7 +48,7 @@ data "external" "git_describe" {
 
 module "basic-deployment" {
   source  = "jdevries3133/basic-deployment/kubernetes"
-  version = "3.0.0"
+  version = "3.0.2"
 
   app_name  = "jdv"
   container = "jdevries3133/jackdevries.com:${data.external.git_describe.result.output}"
