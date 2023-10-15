@@ -4,9 +4,6 @@
     {
       "path": "./app"
     },
-    {
-      "path": "./cypress"
-    }
   ],
   "compilerOptions": {
     "baseUrl": ".",

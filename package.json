@@ -4,9 +4,7 @@
   "description": "",
   "license": "",
   "scripts": {
-    "cypress": "cypress run",
     "dev": "yarn prisma:deploy && yarn build:tailwind && concurrently --names remix,tailwind \"PORT=8000 node --inspect=0.0.0.0:9229 ./node_modules/.bin/remix dev --sourcemap\" \"yarn build:tailwind --watch\"",
-    "cypress:dev": "cypress open --browser chrome --e2e",
     "production": "yarn prisma:deploy && PORT=8000 remix-serve build",
     "build:all": "yarn build:tailwind && yarn prisma:generate && remix build",
     "build:tailwind": "tailwindcss -i styles/tailwind.css -o app/tailwind.css",
@@ -17,9 +15,9 @@
     "postinstall": "remix setup node",
     "test": "vitest",
     "debug-test": "NO_COLORS=true node --inspect-brk=0.0.0.0 ./node_modules/.bin/vitest --threads=false",
-    "typecheck": "tsc -b app && tsc -b cypress",
-    "prettiercheck": "prettier --check app cypress",
-    "fmt": "prettier --write app cypress"
+    "typecheck": "tsc -b app",
+    "prettiercheck": "prettier --check app",
+    "fmt": "prettier --write app"
   },
   "dependencies": {
     "@headlessui/react": "^1.6.6",
@@ -54,7 +52,6 @@
     "@types/react": "18",
     "@types/react-dom": "18",
     "@vitejs/plugin-react": "^1.3.2",
-    "cypress": "^9.7.0",
     "happy-dom": "^4.0.1",
     "prettier": "^2.7.1",
     "tailwindcss": "^3.0.17",

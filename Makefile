@@ -72,22 +72,3 @@ endif
 	yarn prettiercheck
 	yarn typecheck
 	yarn test run
-ifdef CI
-	docker compose pull
-	docker compose up -d
-endif
-	make wait
-	yarn cypress
-
-
-.PHONY: wait
-wait:
-	@# wait for the app to startup in docker-compose, as indicated by it
-	@# providing a response on `localhost:8000`.
-	@while true; do \
-		curl --silent --output /dev/null http://localhost:8000; \
-		[ $$? == 0 ] && break; \
-		sleep 5; \
-		echo "awaiting server readiness"; \
-		docker-compose logs; \
-	done
