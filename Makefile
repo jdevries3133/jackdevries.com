@@ -52,7 +52,7 @@ debug:
 
 .PHONY: fmt
 fmt:
-	yarn format
+	yarn fmt
 	terraform fmt
 
 
