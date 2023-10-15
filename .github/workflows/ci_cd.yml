@@ -13,7 +13,7 @@ jobs:
     needs: [push_container]
     environment: Kubernetes
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: make check
@@ -25,12 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: Kubernetes
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: login to docker hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           username: jdevries3133
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -45,7 +45,7 @@ jobs:
     needs: [ci, push_container]
     environment: Kubernetes
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
