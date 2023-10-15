@@ -8,11 +8,7 @@ import { Loading } from "./loading";
  * I'm getting some slight spam; let's start a banned words list as a simple
  * anti-spam system
  */
-const BANNED_WORDS = [
-  'Baclofen',
-  'antib.webstarts.com',
-  'neurontin'
-];
+const BANNED_WORDS = ["Baclofen", "antib.webstarts.com", "neurontin"];
 
 function isAllowed(comment: string): boolean {
   if (BANNED_WORDS.some((word) => comment.includes(word))) {
