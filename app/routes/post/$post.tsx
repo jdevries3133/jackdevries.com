@@ -1,5 +1,10 @@
 import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react";
-import { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import {
+  ActionFunction,
+  ErrorBoundaryComponent,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
 import prisma from "~/prisma.server";
 import { action as commentFormAction } from "~/components/commentForm";
 import { CommentSection } from "~/components/commentSection";
