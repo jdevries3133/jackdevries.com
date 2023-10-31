@@ -14,12 +14,14 @@ import * as jsBuild from "./javascriptTools.mdx";
 import * as dockerResources from "./dockerResources.mdx";
 import * as ctdGitTips from "./ctdGitTips.mdx";
 import * as oneBranch from "./oneBranch.mdx";
+import * as itsTerminal from "./itsTerminal.mdx";
 
 /**
  * This is where posts can be published or unpublished. All posts in the array
  * below are published.
  */
 export const allPosts = [
+  itsTerminal,
   oneBranch,
   ctdGitTips,
   dockerResources,
