@@ -29,7 +29,7 @@ This is an interactive lesson all about the Unix shell! This will be useful to
 anyone developing in a Unix-like environment, including Linux, macOS, or Windows
 Subsystem for Linux (WSL). This is not an introductory lesson. Rather, we assume
 some prerequisite knowledge of basic shell commands like `pwd`, `cd`, `ls`,
-`mv`, `cp`, `cat`, etc. is assumed.
+`mv`, `cp`, `cat`, etc.
 
 This is also not a guide about configuring a terminal emulator, multiplexer, or
 any other shell-adjacent tooling, though it's essential that you have a setup
@@ -49,7 +49,7 @@ ideas about the shell:
 
 ## A Bit of History
 
-<iframe width="500" height="315"
+<iframe width="100%" height="315"
 src="https://www.youtube.com/embed/2XLZ4Z8LpEE?si=ngyqR8kfSTAJ_LL-&amp;start=738"
 title="YouTube video player" frameborder="0" allow="accelerometer; autoplay;
 clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -85,7 +85,7 @@ numerous:
 <summary>View Answer</summary>
 
 `-t` stands for "allocate a pseudo-TTY," where "TTY" is an abbreviation for
-teletype writer! Even in modern Linux, each terminal is in I/O device mounted at
+teletype writer! Even in modern Linux, each terminal is an I/O device mounted at
 `/dev/tty1`, `/dev/tty2`, etc.
 
 In fact, you can use the `tty` command to identify the TTY device of your
@@ -111,7 +111,7 @@ tricks. Let's get started with some challenges from the companion repo!
 
 First, run `./create_haystack` in the companion repo.
 
-Challenge: find the needle in the haystack using the shell! The needle is in a
+**Challenge:** find the needle in the haystack using the shell! The needle is in a
 file named `needle1.txt`
 
 <details>
@@ -134,7 +134,7 @@ find haystack/**/needle*.txt
 
 #### Big Idea
 
-You _can_ do all this in VS Code (so far). But should you?
+You _can_ do all this in VS Code (so far). But don't worry, we're just getting warmed up!
 
 ### Remove the Needles
 
@@ -144,13 +144,17 @@ Run `./create_haystack 10` to put ten needles into the haystack.
 
 Run `mkdir biohazard` to create a place for all this waste.
 
-Then, copy all the needles into the `biohazard` folder.
+**Challenge:** copy all the needles into the `biohazard` folder.
 
 <details>
 <summary>View Hint</summary>
 ```bash
 man find | colcrt | grep -A 5 '\-exec'
 ```
+
+_hopefully it's clear, but this itself is not a hint, run this in your terminal to get the hints_
+
+
 </details>
 
 <details>
@@ -170,8 +174,8 @@ Tools you think you know often do more than you expect.
 
 Run `./kaboom`.
 
-Recover control of your shell without closing it! It looks like pesky `node
-program.js` is out of control -- typical JavaScript applications...
+**Challenge:** recover control of your shell without closing it! Find the lingering processes and kill them with your shell. 
+
 
 <details>
 <summary>View Hint</summary>
@@ -184,17 +188,14 @@ You will need to open a _new_ shell first :)
 <summary>View Another Hint</summary>
 
 You should use `ps aux` to list all processes running on your machine, which
-will include several entries that include `node program.js`.
+will include several entries that say `node program.js`. These are the misbehaving processes. 
 
 </details>
 
 <details>
 <summary>Gimme another hint</summary>
 
-You should use `ps aux` to list all processes running on your machine, which
-will include several entries that include `node program.js`.
-
-You can pass the process ID to `kill` to make it go bye bye.
+You can pass the process ID to `kill` to make it go bye bye. The PID is the second column in the output of `ps aux`. 
 
 </details>
 
@@ -213,10 +214,10 @@ Also, what the heck is `awk { print $2 }`? That was handy!
 
 ### Awk Counter
 
-Use `awk` to parse a count of successful logins and successful logouts for each
+**Challenge:** Use `awk` to parse a count of successful logins and successful logouts for each
 user in `./some_app.log`.
 
-Working towards this, we can do a simple `awk` counter together, to just count
+Working towards this, we can do a simple `awk` counter example together, to just count
 the number of each letter in this file:
 
 <CodeSample>
@@ -328,8 +329,8 @@ END {
 
 ### Feline Query
 
-`cd` into the `queries` folder. You will find 20 one-liner SQL queries. To
-prepare to format them, let's start by printing them into the shell as a
+`cd` into the `queries` folder. You will find 20 one-liner SQL queries to
+prepare to format the queries, let's start by printing them into the shell as a
 singular text stream.
 
 **Challenge:** write a command to print all 20 queries into your shell.
@@ -344,7 +345,7 @@ ls | xargs cat
 
 ### `sed`
 
-Now that you can print your queries, pipe them into `sed`, and write a regex to
+**Challenge:** now that you can print your queries, pipe them into `sed`, and write a regex to
 make them less ugly!
 
 > Note: on macOS, consider installing
@@ -388,7 +389,7 @@ sed -i  's/\(FROM\|WHERE\|ADD CONSTRAINT\|FOREIGN KEY\|GROUP BY\)/\n\1/g' *.sql
 #### Big Idea
 
 <details>
-<summary>--</summary>
+<summary>(wait for it)</summary>
 You can't do that in VS Code!
 </details>
 
@@ -403,7 +404,7 @@ grep -rni 'test' | wc -l
 
 Perfect! Using Unix utils, gluing shell commands together, and answering my
 questions! However, much to my dismay, it took several seconds, pinned my CPU at
-100%, and returned over 30,000 results. Either I'm a really great tester or
+100%, and returned over 30,000 lines. Either I'm a really great tester or
 something is fishy.
 
 Turns out that `find` and `grep` are not aware of `git`. So, if they are your
