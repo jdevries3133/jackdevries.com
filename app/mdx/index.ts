@@ -15,12 +15,14 @@ import * as dockerResources from "./dockerResources.mdx";
 import * as ctdGitTips from "./ctdGitTips.mdx";
 import * as oneBranch from "./oneBranch.mdx";
 import * as itsTerminal from "./itsTerminal.mdx";
+import * as gptCalorieCounting from "./gptCalorieCounting.mdx";
 
 /**
  * This is where posts can be published or unpublished. All posts in the array
  * below are published.
  */
 export const allPosts = [
+  gptCalorieCounting,
   itsTerminal,
   oneBranch,
   ctdGitTips,
