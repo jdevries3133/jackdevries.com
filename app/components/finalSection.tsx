@@ -92,12 +92,8 @@ export const FinalSection: React.FC<{ actionData: any }> = ({ actionData }) => (
 
         <div className="bg-clay-100 shadow-md rounded-md m-2 p-2 lg:p-6">
           <p className="text-justify lg:text-lg text-black">
-            I have spent a lot of time working on software projects big and
-            small. I know how to navigate large codebases and make meaningful
-            contributions to them. I also have followed best-practices for my
-            new projects, and I've encountered software development
-            methodologies in a hands-on way to help me manage my own larger
-            projects.
+            I am excited to keep building and learning. Thanks for finding my
+            site, and please reach out if you would like to be in touch!
           </p>
         </div>
         <div>

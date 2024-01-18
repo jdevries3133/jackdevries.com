@@ -5,7 +5,6 @@ import { ActionFunction } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
 import prisma from "~/prisma.server";
 import { MainProjects } from "~/components/mainProjects";
-import { OtherProjectsAndBio } from "~/components/otherProjectsAndBio";
 import { FinalSection } from "~/components/finalSection";
 
 export const meta: MetaFunction = () => {
@@ -54,7 +53,6 @@ export default function Index() {
     <>
       <HeroSection />
       <MainProjects />
-      <OtherProjectsAndBio />
       <FinalSection actionData={actionData} />
     </>
   );
