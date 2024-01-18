@@ -17,10 +17,7 @@ export const MainProjects: React.FC = () => (
         <div>
           <div className="rounded-t-md sticky p-2 bg-clay-400 top-0 shadow-xl">
             <div className="rounded-b-md">
-              <h3 className="text-mineral inline xl:text-3xl">Fast Grader</h3>{" "}
-              <h4 className="text-mineral font-light inline">
-                for Google Classroom
-              </h4>
+              <h3 className="text-mineral inline xl:text-3xl">Notion Clone</h3>{" "}
             </div>
             <video
               muted
@@ -30,46 +27,18 @@ export const MainProjects: React.FC = () => (
               autoPlay
               className="border-2 border-mineral-700 border-opacity-50"
             >
-              <source src="./static/fast_grader.mp4" type="video/mp4" />
+              <source src="./static/nc.mp4" type="video/mp4" />
             </video>
           </div>
           <p className="px-3 sm:text-justify text-gray-600">
-            I was inspired by the design philosophy of <code>vim</code> to
-            create this minimal and efficient keyboard-driven tool to help
-            teachers provide grades and feedback for their google classroom
-            assignments.
-          </p>
-          <p className="px-3 sm:text-justify text-gray-600">
-            The backend stack is PostgreSQL, Django, and Django REST Framework.
-            The application is deployed on a{" "}
-            <a href="https://kubernetes.io/">Kubernetes cluster</a> that I
-            created and maintain in my home. It's infrastructure is defined as
-            code (IaC) using <a href="https://www.terraform.io/">Terraform.</a>{" "}
-            It is also continuously deployed to production and staging
-            environments using{" "}
-            <a href="https://github.com/jdevries3133/fast_grader/actions">
-              GitHub Actions.
-            </a>{" "}
-            The backend utilizes the Google Drive and Google Classroom APIs to
-            fetch user data. I also used Python's{" "}
-            <a href="https://docs.python.org/3/library/difflib.html">difflib</a>{" "}
-            to implement a feature where teachers can view only the differences
-            between the template they provided to students, and the actual
-            student submission.
-          </p>
-          <p className="px-3 sm:text-justify text-gray-600">
-            On the frontend of this project, I used{" "}
-            <a href="https://tailwindcss.com/">Tailwind CSS</a> and{" "}
-            <a href="https://htmx.org/docs/#introduction">htmx</a> to facilitate
-            rapid prototyping, and minimize code repetition. This choice also
-            allowed me to dynamically inject UI browser extension from the
-            backend, which has been pretty neat!
+            I made a dynamic data-table inspired by Notion, using Rust
+            (Axum web), HTMX, and PostgreSQL.
           </p>
         </div>
 
         <div className="py-3 flex flex-row justify-center gap-10">
           <a
-            href="https://github.com/jdevries3133/fast_grader"
+            href="https://github.com/jdevries3133/nc"
             rel="noopener noreferrer"
             target="_blank"
           >
