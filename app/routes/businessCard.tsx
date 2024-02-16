@@ -77,7 +77,7 @@ export default function BusinessCardPage() {
   const [viewOpt, setViewOpt] = useState<"source" | "card">("source");
   return (
     <div className="md:grid md:grid-cols-2 gap-4 items-center justify-center">
-      <div className="flex flex-col gap-4 p-2 bg-secondary-700 sm:rounded-xl min-h-[100vh]">
+      <div className="flex flex-col gap-4 p-2 bg-secondary-700 min-h-[100vh] min-w-[100vw]">
         <a href="/blog">
           <button className="border border-primary-300 p-2 transition rounded inline text-primary-300 hover:text-secondary-700 hover:bg-clay-300">
             Read my Blog
@@ -88,18 +88,20 @@ export default function BusinessCardPage() {
             Visit the Homepage
           </button>
         </a>
-        <button
-          onClick={() => {
-            if (viewOpt === "card") {
-              setViewOpt("source");
-            } else {
-              setViewOpt("card");
-            }
-          }}
-          className="border border-primary-300 p-2 transition rounded inline text-primary-300 hover:text-secondary-700 hover:bg-clay-300"
-        >
-          View {viewOpt === "card" ? "Source" : "Card"}
-        </button>
+        <div>
+          <button
+            onClick={() => {
+              if (viewOpt === "card") {
+                setViewOpt("source");
+              } else {
+                setViewOpt("card");
+              }
+            }}
+            className="border border-primary-300 p-2 transition rounded inline text-primary-300 hover:text-secondary-700 hover:bg-clay-300"
+          >
+            View {viewOpt === "card" ? "Source" : "Card"}
+          </button>
+        </div>
         {viewOpt === "card" && (
           <div className="p-2 aspect-[3/2] bg-mineral-600 max-w-[400px] rounded-xl text-clay-400">
             <h1 className="py-3 text-primary-300 text-2xl text-center flex-shrink lg:flex-shrink-0 lg:text-4xl">
