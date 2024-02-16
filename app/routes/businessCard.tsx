@@ -6,70 +6,31 @@ const source = `
   Thanks for visiting!
   Here's my business card :)
 -->
-<div class="
-  p-6
-  aspect-[3/2]
-  bg-mineral-600
-  sm:rounded-xl
-  text-clay-400
-">
-  <h1
-    class="
-      py-3
-      text-primary-300
-      text-2xl
-      text-center
-      flex-shrink
-      lg:flex-shrink-0
-      lg:text-4xl
-    "
-  >
+<div
+  class="p-2 aspect-[3/2] bg-mineral-600 max-w-[400px] rounded-xl text-clay-400"
+>
+  <h1 class="py-3 text-primary-300 text-2xl text-center flex-shrink">
     Hello there!
   </h1>
   <div class="flex items-center px-6 gap-4">
     <div class="text-right">
-      <h3 class="text-sm sm:text-3xl">
-        Jack DeVries
-      </h3>
-      <h4 class="text-sm sm:text-base">
-        Web &amp; Software Developer
-      </h4>
+      <h3 class="text-md sm:text-3xl">Jack DeVries</h3>
+      <h4 class="text-sm sm:text-base">Web &amp; Software Developer</h4>
     </div>
-    <div class="
-      w-24
-      lg:w-48
-      p-2
-      bg-primary-100
-      rounded-full
-      shadow
-    ">
-      <img
-        class="rounded-full"
-        src="/static/me.webp"
-      />
+    <div class="w-24 p-2 bg-primary-100 rounded-full shadow">
+      <img class="rounded-full" src="/static/me.webp" />
     </div>
   </div>
-  <p class="text-xs">
-    <b>Email:</b> jdevries3133@gmail.com
-  </p>
-  <p class="text-xs">
-    <b>GitHub:</b> github.com/jdevries3133
-  </p>
-  <p class="text-xs">
-    <b>LinkedIn:</b> linkedin.com/in/jack-devrieswq/
-    <span
-      class="
-        block
-        ml-34
-        sm:inline
-        sm:ml-4
-        text-[0.5rem]
-        italic
-      "
-    >
-      (yes, that's a vim joke)
-    </span>
-  </p>
+  <div class="border-2 border-primary-100 p-2 rounded-xl my-2">
+    <p class="text-xs"><b>Email:</b> jdevries3133@gmail.com</p>
+    <p class="text-xs"><b>GitHub:</b> github.com/jdevries3133</p>
+    <p class="text-xs">
+      <b>LinkedIn:</b> linkedin.com/in/jack-devrieswq/<span
+        class="block sm:inline ml-4 text-[0.5rem] italic"
+        >(yes, that's a vim joke)</span
+      >
+    </p>
+  </div>
 </div>
 `;
 
@@ -104,7 +65,7 @@ export default function BusinessCardPage() {
         </div>
         {viewOpt === "card" && (
           <div className="p-2 aspect-[3/2] bg-mineral-600 max-w-[400px] rounded-xl text-clay-400">
-            <h1 className="py-3 text-primary-300 text-2xl text-center flex-shrink lg:flex-shrink-0 lg:text-4xl">
+            <h1 className="py-3 text-primary-300 text-2xl text-center flex-shrink">
               Hello there!
             </h1>
             <div className="flex items-center px-6 gap-4">
@@ -114,7 +75,7 @@ export default function BusinessCardPage() {
                   Web & Software Developer
                 </h4>
               </div>
-              <div className="w-24 lg:w-48 p-2 bg-primary-100 rounded-full shadow">
+              <div className="w-24 p-2 bg-primary-100 rounded-full shadow">
                 <img className="rounded-full" src="/static/me.webp" />
               </div>
             </div>
