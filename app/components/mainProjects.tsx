@@ -31,8 +31,8 @@ export const MainProjects: React.FC = () => (
             </video>
           </div>
           <p className="px-3 sm:text-justify text-gray-600">
-            I made a dynamic data-table inspired by Notion, using Rust
-            (Axum web), HTMX, and PostgreSQL.
+            I made a dynamic data-table inspired by Notion, using Rust (Axum
+            web), HTMX, and PostgreSQL.
           </p>
         </div>
 

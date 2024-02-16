@@ -1,5 +1,35 @@
 import { PropsWithChildren, MouseEventHandler } from "react";
 
+export const PrimaryButton: React.FC<
+  PropsWithChildren<{
+    onClick?: MouseEventHandler<HTMLButtonElement>;
+  }>
+> = ({ onClick, children, ...rest }) => (
+  <button
+    {...rest}
+    onClick={onClick}
+    className="
+      shadow
+      p-6
+      m-6
+      text-clay-200
+      font-bold
+      text-lg
+      rounded-md
+      bg-gradient-to-tr
+      from-secondary-400
+      to-secondary-600
+      transition
+      hover:text-white
+      hover:from-secondary-300
+      hover:to-secondary-400
+      hover:shadow-none
+                "
+  >
+    {children}
+  </button>
+);
+
 export const SecondaryButton: React.FC<
   PropsWithChildren<{
     onClick?: MouseEventHandler<HTMLButtonElement>;
