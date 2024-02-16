@@ -51,7 +51,7 @@ export const HeroSection = () => (
           <h4 className="text-sm sm:text-base">Web & Software Developer</h4>
         </div>
         <div className="w-24 lg:w-48 p-2 bg-primary-100 rounded-full shadow">
-          <img className="rounded-full" src="/static/me@400px.jpg" />
+          <img className="rounded-full" src="/static/me.webp" />
         </div>
       </div>
     </div>
