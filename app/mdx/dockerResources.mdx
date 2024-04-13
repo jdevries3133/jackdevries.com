@@ -25,10 +25,10 @@ from the ground up.
 
 Quick demos that show what you can do with the docker CLI alone
 
-[Startup a new mysql server locally](https://hub.docker.com/_/mysql) _see "How
-to use this image" section
+[Startup a new mysql server locally](https://hub.docker.com/_/mysql);
+_see "How to use this image" section._
 
-Run a redis server locally & attach to it with just 1 line:
+Run a redis server locally & attach to it with just one line:
 
 ```bash
 docker run -it --rm redis redis-cli -h some-redis
@@ -40,8 +40,8 @@ Print out the `resolv.conf` for Ubuntu:latest
 docker run ubuntu:latest cat /etc/resolv.conf
 ```
 
-Run a local python script inside an Alpine container instead of on your own
-machine.
+Run a local python script inside an Alpine container. This works even if python
+is not installed on your machine!
 
 ```bash
 echo "print('hello, world!')" > main.py
