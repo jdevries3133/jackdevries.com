@@ -325,3 +325,95 @@ to try getting started with applying this philosophy.
 
 -->
 
+# Installation
+
+You can follow the official installation guide from the [git
+book](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+VS Code includes a [git integration out of the
+box](https://code.visualstudio.com/docs/sourcecontrol/overview). I'll only share
+terminal commands for interacting with Git, but until we get above 
+
+# Roadmap Levels
+
+I break my git roadmap into 5 levels, and describe the key skills you need to
+transition in-between levels.
+
+<!--
+
+  TODO: I'm realizing that a common criticism of early git guides is that
+  you really kill people when you tell them to commit their dependencies,
+  because it creates a ton of confusion later and basically requires history
+  rewriting to fix it, or else you carry that repo bloat forever, which isn't
+  really the right answer.
+
+  Meanwhile, I like the idea of introducing git from a plain-text-workflows
+  perspective. Ugh, idk.
+
+  feeling a bit stumped on how to proceed
+-->
+
+- level 1: solo & local
+- level 2: solo & online (GitHub)
+- level 3: online collaboration
+- level 4: history destroyer
+- level 5: workflow creator
+
+# Level 1: Solo & Local
+
+You want to dip your toes into using git to keep track of information. You might
+not be programming at all. Maybe your only git use-case is for keeping track of
+notes or a personal finance ledger. Or you might have a few python scripts to
+keep track of; you're not doing heavy-duty software engineering. Another great
+level 1 use-case is keeping track of configuration files. This use-case is
+sometimes called a dotfiles repo.
+
+## Level 1 Commands
+
+```bash
+git init
+```
+
+In an empty folder, run this command to create a new git repository. This
+creates a hidden `.git` folder.
+
+You can choose the scope of a git repository. At many companies, all of the
+code, testing scripts, production system configuration, internal docs, and
+external docs often live in one single gigantic git repository. Git repos can
+scale to mind-boggling scales. The Linux kernel is a very large and well-known
+repo. It has 88,000 files today and 1,351,445 historical revisions! Or, you can
+create a tiny repository. For example, you could create a repository to store
+your notes on a book you're reading, which might only ever have a handful of
+files.
+
+Whatever the repo is for, a good thing to do first is to create a `README.txt`
+(or `README.md` if you want to use markdown) file in the repository's folder. In
+this file, say what the repository is for. This file can contain just a single
+sentence if you don't have much to say. Create this file using your text editor
+of choice.
+
+Now, this brings us to our next command;
+
+```bash
+git status
+```
+
+You will see the following output if you've been following along;
+
+```
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        README.md
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
+
+Forget about `git add` - you don't need that yet.
+
+The next thing we need to do is to create our first git commit. "Commit," is
+like "save." Every time you commit, a backup of your work is stored in the
+`.git` folder, and you create a new revision.
