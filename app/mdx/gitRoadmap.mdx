@@ -30,12 +30,12 @@ git to track, for example, a Microsoft Word document. Technically, you can – a
 data can be tracked in a git repository – but first and foremost git is intended
 to be used with plain text.
 
-Plain text? Yes, plain text. The stuff with the ugly square letters that you may
-have last thought about when you opened Notepad++ in your elementary school
-computer lab. The stuff in `.txt` files. The stuff that doesn't have headings,
-**bold**, _italic_, tables, [links](https://example.com), or any features
-whatsoever except for being able to capture the exact buttons you press on the
-keyboard and then letting you change them later.
+Yes, plain text. The stuff with the ugly square letters that you may have last
+thought about when you opened Notepad++ in your elementary school computer lab.
+The stuff in `.txt` files. The stuff that doesn't have headings, **bold**,
+_italic_, tables, [links](https://example.com), or any features whatsoever
+except for being able to capture the exact buttons you press on the keyboard and
+then letting you change them later.
 
 I might be losing you at this point, but stick with me. If plain text doesn't
 excite you, it's very possible that you don't know what you're missing out on;
@@ -102,43 +102,51 @@ Text."](https://www.youtube.com/watch?v=ajfb5LSbQVM)
 
 ## Proprietary Formats
 
-Every time you use an app with a proprietary format like MS Word, google docs,
-MS Excel, or even a little note-taking app, your information is being encoded
-into a format that the app creator chooses, and stored in a location that they
-choose too. Even if the information stays on your device like in the case of a
-`.docx` file, you're going to have a very limited ability to work with that data
-except through the word application. Certainly, the intent of the file-format is
-not to be a use-case agnostic store of information. Instead, an end-user making
-use of the raw information in a `.docx` file not via MS Word is an afterthought.
+Every time you use an app with a proprietary format like Microsoft Word/Excel,
+Google Docs/Sheets, or even a little note-taking app, your information is being
+encoded into a format that the app creator chooses, and stored in a location
+that they choose too. Even if the information stays on your device like in the
+case of a `.docx` file, you're going to have a very limited ability to work with
+that data except through the word application. Certainly, the intent of the
+file-format is not to be universally accessible. Instead, an end-user making use
+of the raw information in a `.docx` file is an afterthought. The app designers
+only intend the `.docx` file to be interacted with via the Microsoft Word
+application. For cloud-based applications it's even worse - you don't even get
+access to the underlying data. It's usually swiftly siphoned off of your device
+and onto a remote server, where whether or not you retain access to your
+information is up to the day-to-day whims of the company who maintains the
+service, or your ability to keep paying for a service contract.
 
 ## Plain Text is Not So Plain
 
 So far, I've been tip-toeing around some more tech-y jargon to avoid scaring
-anyone away, and I'm mostly going to keep doing that, but I should mention that
-I am not _literally_ asking you to move your whole live of information
-technology into `.txt` files, and then to whip out a calculator when you need to
-take the plain-text list of expenses for this month and add them up because you
-are now too cool for excel.
+anyone away. I'm mostly going to keep doing that, but I should mention that I am
+not _literally_ asking you to move your whole life of information technology
+into `.txt` files. Similarly, I don't suggest that you  whip out a calculator on
+the first of each month when you need to add up the plain-text list of expenses
+you've been tracking.
 
-I know you may not be interested in becoming a programmer, but the elephant in
-the room here is that every computer program or software application you've ever
-interacted with is a (maybe staggeringly large) chunk of plain-text in the form
-of a code repository. All computer code is plain text.
-
-But a common misconception is that there are only two use-cases for plain text:
-`.txt` files, and computer programs. That's not right! You can be a user of
-plain-text, improve your technical literacy, and get a lot more out of your
-computer without going particularly deep into programming.
+Every computer program or software application you've ever interacted with is a
+(maybe staggeringly large) chunk of plain-text in the form of a code repository.
+All computer code is plain text. If plain text can create Minecraft, maybe
+you're making some assumptions about the relationship between plain text and
+rich experiences on a computer which are not correct? A common misconception is
+that there are only two use-cases for plain text: `.txt` files, and computer
+programs. That's not right! You can be a user of plain-text-oriented programs,
+improve your technical literacy, and get a lot more out of your computer without
+learning to program.
 
 For editing plain text, you can start with Windows Notepad or TextEdit.app on
 macOS. [Visual Studio Code](https://code.visualstudio.com/) (or "VS Code" for
-short) is the most popular plain-text editor today among programmers. Don't let
-"code," scare you away, though. The main features it has out of the box is a
-file explorer in the sidebar, search, and interacting with git, which is exactly
-what you need even if you're not interested in programming, specifically.
+short) is a very popular plain-text editor, but it's mostly used by programmers
+and therefore might be a bit overwhelming if that's not your perrogative. Don't
+let "visual studio **code**," scare you away, though. The main features it has
+out of the box is a file explorer in the sidebar, search, and interacting with
+git, which is exactly what you need even if you're not interested in
+programming, specifically.
 
 [markdown](https://www.markdownguide.org/) is a plain-text format for writing
-simple documents using plain text. I use this for notes and technical documents.
+simple documents.
 
 [mermaid](https://mermaid.live/) is a plain-text format for creating diagrams.
 
@@ -146,9 +154,11 @@ Markdown and mermaid together is generally all that I use for technical
 documents. Some folks also like to use
 [LaTeX](https://en.wikipedia.org/wiki/LaTeX) which is better for documents which
 have intense type-setting needs; for example, needing to be able to write
-complex mathematical expressions. LaTeX is often used for academic papers. I've
-personally never had a need for this, and have been perfectly happy with
-markdown & mermaid. I also suck at math, though.
+complex mathematical expressions. Or, creating an e-book where you want lots of
+tables, diagrams, and other figures, and you want precise control over the
+layout. LaTeX is often used for academic papers. I've personally never had a
+need for this, and have been perfectly happy with markdown & mermaid. I also
+suck at math, though.
 
 [Javascript Object Notation (JSON)](https://en.wikipedia.org/wiki/JSON),
 [yaml](https://en.wikipedia.org/wiki/YAML), and [toml](https://toml.io/en/) are
@@ -158,17 +168,18 @@ There are a handful of apps and formats for [doing accounting in
 plain-text](https://plaintextaccounting.org/).
 
 Of course, you can also write programs in plain-text, where you can give the
-computer instructions and execute them. If you're new to programming, I'd
-recommend the Python programming language and the book [Automate the Boring
-Stuff with Python](https://automatetheboringstuff.com/), which is available for
-free online.
+computer instructions and execute them. If you're new to programming and
+interested in getting started, I'd recommend the Python programming language and
+the book [Automate the Boring Stuff with
+Python](https://automatetheboringstuff.com/), which is available for free
+online. This book is how I got started myself!
 
 Last, circling back to VS Code, it has plugins for all of the formats I
-mentioned, before which can create a fairly pleasant and user-friendly
-experience around interacting with the documents (markdown), charts (mermaid),
-academic papers (LaTeX), data (JSON, yaml, toml), financial ledgers, and other
-information resources that you have defined in plain text. For example, you
-might want to see a mermaid chart update live as you change the text that
+mentioned, which can create a fairly pleasant and user-friendly experience
+around interacting with documents (markdown), charts (mermaid), academic papers
+(LaTeX), data (JSON, yaml, toml), financial ledgers, and other information
+resources that you have defined in plain text. For example, you might want to
+see a markdown doc or mermaid chart update live as you change the text that
 defines it. You might also want to export the chart as an image so that you can
 share it.
 
@@ -178,14 +189,14 @@ different. Instead of every app having its own data-format, plain text is the
 lingua franca. Of course, unless it's a text editor, programs generally can't
 read any random text you throw at them. If the purpose of a program is to add up
 numbers, it might give you an error for inputs that are not lists of numbers.
-The accounting softwares typically define simple to learn but struct formats you
-need to follow in order for your ledger files to be usable by the program. In
-general, taking plain text and turning it into some application-level concept
-like a financial ledger or a nice-looking document is called parsing.
+The ledger software all define a simple to learn but strict format you need to
+follow in order for your ledger files to be usable by the program. In general,
+taking plain text and turning it into some application-level concept like a
+financial ledger or a nice-looking document is called parsing.
 
 If you have a large file and you change one little character somewhere, you can
 make the whole file meaningless to whatever program was using it. This
-experience can be overwhelmingly anxiety-inducing and confusing. It's why git is
+experience can be overwhelming, anxiety-inducing, and confusing. It's why git is
 so important as the hinge-pin that holds the whole world of plain-text together.
 
 ## Plain Text is not (Scary) Programming
@@ -198,16 +209,30 @@ Listen, I'm not going to sit here on an ivory tower and try to tell you what is
 and isn't "programming." Traveling deeper into the world of plain text will make
 you a much more advanced user of a computer. You will be less of a consumer of
 the path laid down before you, and more of a determiner of your own destiny. In
-that sense, you will become more like a bonafide software engineer.
+that sense, you will become more like a bonafide programmer.
 
-What I am afraid of is that, "I don't want to program," is a
-[thought-terminating
-cliché](https://en.wikipedia.org/wiki/Thought-terminating_clich%C3%A9) for a lot
-of people. I don't want it to cause you to lose out on a huge body of beautiful
-technology. Portraying more technical folks as genius wizards or sweaty nerds
-both play into tech profiteering. The reality is that you can use these tools
-little by little, learn a little bit each day, and experience compounding
-personal growth while removing your dependency on technology build for profit.
+"I don't want to program," is a [thought-terminating
+cliché](https://en.wikipedia.org/wiki/Thought-terminating_clich%C3%A9), because
+it is an over-simplification. I don't want anyone to lose out on the huge body
+of beautiful programming-adjacent technology that exists in the plain-text
+domain. Portraying more technical folks as genius wizards or sweaty nerds both
+play into tech profiteering. The reality is that you can use these tools little
+by little, learn a bit (or byte) each day, and experience compounding personal
+growth while removing your dependency on technology built for profit.
+
+In the attempt to define programming, there is a spectrum. Clearly, typing text
+into inputs and clicking through UIs is not programming. But, what about
+keyboard shortcuts? Typing a sequence of keyboard shortcuts is not any different
+from typing a command into a terminal. And writing a series of terminal commands
+into a plain-text file to re-run a saved sequence of commands is a program.
+Imagine that you could record commonly used sequences of keyboard shortcuts and
+replay them. That would be programming the computer, wouldn't it? And that
+shouldn't sound scary.
+
+_Aside: I recognize that some folks use very few keyboard shortcuts or none at
+all, but you probably know at least `ctrl-c` for copy, and `ctrl-v` for paste,
+right? If you don't, go ahead and start using those; voila - you're now a
+computer programmer. Congrats!_
 
 My main take is that organizing your information using plain text _mostly_ isn't
 programming, though it will make programming immediately much more useful to you
@@ -219,26 +244,28 @@ do a little bit of programming.
 I hope that at this point you're thinking to yourself;
 
 > It does suck that my information is in all these separate walled gardens, but,
-> what, am I supposed to put all my information into a bunch of fucking `.txt`
-> files in random places on my computer? That sounds like an absolute
-> disorganized mess, and I won't be able to search for things or keep track of
-> changes. If I accidentally the wrong file or folder, I'll lose important data.
-> And if I'm doing something like writing a document, plain text isn't good
-> enough. I want stuff to be in a nice font that I can read, and I need to be
-> able to create tables and stuff. I want to be able to insert pictures. I need
-> spreadsheet software to manage my data, just sticking it in a text file won't
-> allow me to do computations. Plus, what the hell is git? This guy still hasn't
-> explained that at all; did he forget what he was talking about?
+> what, am I supposed to put all my information into a bunch of `.txt` files in
+> random places on my computer? That sounds like an absolute disorganized mess,
+> and I won't be able to search for things or keep track of changes. If I
+> accidentally the wrong file or folder, I'll lose important data. And if I'm
+> doing something like writing a document, plain text isn't good enough. I want
+> stuff to be in a nice font that I can read, and I need to be able to create
+> tables and stuff. I want to be able to insert pictures. I need spreadsheet
+> software to manage my data, just sticking it in a text file won't allow me to
+> do computations. Plus, what the heck is git? This guy still hasn't explained
+> that at all; did he forget what he was talking about?
 
-And this is all very reasonable. You've stuck with me so far, and here I'll
-offer my first off-ramp. The good news about plain text is that you can have all
-of this stuff. The great news about plain text is that as a low-level data
-format, it can be interpreted by many, many different computer programs. There
-is a whole world of computing that programmers enjoy which is deeply rich and
-powerful. Programs, themselves written in plain text, can take your ugly
-ducklinig `.txt` file and turn it into something beautiful, searchable,
-interactive, and alive. Assuaging your fears about losing information will be
-the focus of the rest of this article - that's what git is for!
+OK, this is all very reasonable. You've stuck with me so far, and here I'll
+offer my first off-ramp. The great news about plain text is that as a low-level
+data format, it can be interpreted by many, many different computer programs.
+You can pick the best tool for the job when it comes to viewing your
+information, editing it, keeping track of changes over time, and any other
+use-case you have. There is a whole world of computing that programmers enjoy
+which is deeply rich and powerful. Programs, themselves written in plain text,
+can take your ugly ducklinig `.txt` file and turn it into something beautiful,
+searchable, interactive, and alive. Assuaging your fears about losing
+information will be the focus of the rest of this article - that's what git is
+for!
 
 But, it takes real work to adopt new things and change your habits. You need
 real problems that you really want to solve. If you have some pain points with
@@ -250,9 +277,8 @@ and git will be worthwhile.
 Thank you for making it to the crux of my TED talk; let's finally get to the
 point. Git solves a few problems from the vignette before. Specifically;
 
-- _Am I supposed to put all my information into a bunch of fucking `.txt` files
-  in random places on my computer? That sounds like an absolute disorganized
-  mess!_
+- _Am I supposed to put all my information into a bunch of `.txt` files in
+  random places on my computer? That sounds like an absolute disorganized mess!_
 - _I won't be able to keep track of changes_.
 - _If I accidentally the wrong file or folder, I'll lose important data._
 
@@ -261,11 +287,41 @@ documents. It can be used for code, notes, technical documents, or anything else
 that you store as plain text including structured data in JSON, yaml, or toml
 files.
 
-I'll skim over this point, but as you move your information diet from
-closed-garden platforms into plain text, you'll notice that the software you use
-becomes smaller, more focused, deeper in functionality, and often free. I'll
-skim over the reasons behind this phenomenon, but I want to emphasize that git
-is narrowly focused on controlling versions of your plain text documents. It is
-not concerned with searching, parsing, or editing them. For searching and
-editing, as I mentioned earlier, I recommend [Visual Studio
-Code](https://code.visualstudio.com/) for programmers and non-programmers.
+## The Unix Philosophy
+
+As you move your information diet from closed-garden platforms into plain text,
+you'll notice that the software you use becomes smaller, more focused, deeper in
+functionality, and often free. This phenomenon is described as the [Unix
+Philosophy](https://en.wikipedia.org/wiki/Unix_philosophy). The goal here is for
+a constellation of programs to work together to do a job, using plain text as a
+universal interface. For example;
+
+- you edit your document in VS Code
+- you keep track of changes over time with git
+- you share your work and collaborate on a git hosting provider like GitHub,
+  GitLab, etc.
+- you turn your document into a nice-looking shareable PDF using
+  [pandoc](https://pandoc.org/MANUAL.html)
+
+Git is probably the most important component to me, and it's useful if you want
+to try getting started with applying this philosophy.
+
+<!--
+  TODO: the whole intro is not very strong at this point. I think I need to
+  chill out a bit and not go so low-level. Really, plain-text + git isn't a
+  solution unto itself. _maybe_ for not-taking. But if I like to push markdown +
+  git as a note-taking solution, I should just cut to the chase and say it.
+
+  Meanwhile, I think a lot of this content about plain-text and the unix
+  philosophy is interesting for a different post.
+
+  Most importantly, I'm trying to avoid the terminal as a topic, and it's not
+  organic. How can you really talk about the unix philosophy without the unix
+  terminal?
+
+  I'm going to basically start over here with the git roadmap idea I originally
+  had, and need to circle back to rework the intro, which I think is not
+  working.
+
+-->
+
