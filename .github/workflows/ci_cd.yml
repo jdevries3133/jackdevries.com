@@ -10,7 +10,6 @@ jobs:
   ci:
     name: continuous integration checks
     runs-on: ubuntu-latest
-    needs: [push_container]
     environment: Kubernetes
     steps:
       - uses: actions/checkout@v4
