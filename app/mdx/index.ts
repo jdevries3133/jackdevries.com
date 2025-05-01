@@ -16,6 +16,7 @@ import * as ctdGitTips from "./ctdGitTips.mdx";
 import * as oneBranch from "./oneBranch.mdx";
 import * as itsTerminal from "./itsTerminal.mdx";
 import * as gitRoadmap from "./gitRoadmap.mdx";
+import * as plainText from "./plainText.mdx";
 
 /**
  * This is where posts can be published or unpublished. All posts in the array
@@ -23,6 +24,7 @@ import * as gitRoadmap from "./gitRoadmap.mdx";
  */
 export const allPosts = [
   gitRoadmap,
+  plainText,
   itsTerminal,
   oneBranch,
   ctdGitTips,
