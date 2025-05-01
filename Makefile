@@ -3,7 +3,7 @@ SHELL=/bin/bash
 DOCKER_ACCOUNT=jdevries3133
 CONTAINER_NAME=jackdevries.com
 
-TAG?=$(shell git describe --tags)
+TAG?=$(shell git rev-parse HEAD)
 
 # assuming the use of Docker hub, these constants need not be changed
 CONTAINER=$(DOCKER_ACCOUNT)/$(CONTAINER_NAME):$(TAG)

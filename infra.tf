@@ -43,7 +43,7 @@ resource "random_password" "secret_key" {
 }
 
 data "external" "git_describe" {
-  program = ["sh", "-c", "echo '{\"output\": \"'\"$(git describe --tags)\"'\"}'"]
+  program = ["sh", "-c", "echo '{\"output\": \"'\"$(git rev-parse HEAD)\"'\"}'"]
 }
 
 module "basic-deployment" {
