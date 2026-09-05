@@ -5,8 +5,9 @@
 <img
   src="/static/burningToolbox.webp"
   alt="Picture of a toolbox on fire"
-  caption="Javascript build toolchains; circa 2015-2022 and beyond"
 />
+
+above: javascript build toolchains; circa 2015-2022 and beyond.
 
 I'll reference [the companion
 repo](https://github.com/jdevries3133/js_build_tooling) a bit; feel free to download and follow
@@ -180,7 +181,6 @@ While we're at it, we will also need the webpack copy plugin to move an
 <img
   src="/static/simpleWebpackStaticSite.webp"
   alt="Our picture of Obi-Wan, loaded into the static site we created"
-  caption="Hello there"
 />
 
 ## Wrap-Up

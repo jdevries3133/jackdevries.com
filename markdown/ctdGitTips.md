@@ -1,6 +1,4 @@
 
-import { HeroText, HeroBg } from '../components/heroText.tsx';
-
 # GitHub Workflow Tips for Beginners
 
 <p className="italic text-mineral-500 text-sm"
@@ -52,11 +50,7 @@ OK, so what are these common mistakes we're going to address?
 
 Let's say it loud for those in the back:
 
-<HeroBg>
-  <HeroText>
-    You should be able to click &apos;merge&apos; on your Pull Request&#33;&#33;&#33;
-  </HeroText>
-</HeroBg>
+> You should be able to click &apos;merge&apos; on your Pull Request&#33;&#33;&#33;
 
 And if you can't something's gone wrong!
 
@@ -74,9 +68,10 @@ from the bad PR:
 
 <img
   src="/static/ctdGitTips1.webp"
-  caption="Click the red box to jump to the branch with your changes"
   alt="Image showing where to click. As of writing, the screen reader should say 'jdevries3133/node-express-course:wk_3_review_notes' for the element you need to click on"
 />
+
+above: click the red box to jump to the branch with your changes
 
 Next, you'll find yourself on the page for your branch. This is the branch you
 made with your changes (typically "`week2`" or similar). It looks like this,
@@ -85,9 +80,10 @@ step:
 
 <img
   src="/static/ctdGitTips2.webp"
-  caption='Click the red box, then "Open Pull Request"'
   alt='Look for a popup menu element with the text "Contribute"'
 />
+
+above: click the red box, then "Open Pull Request."
 
 Finally, we come upon the page where you done goofed the first time. There are
 4 dropdowns, and you originally made a mistake by accepting the default value
@@ -97,9 +93,11 @@ and change it to be your own repository!
 
 <img
   src="/static/ctdGitTips3.webp"
-  caption="Notice the source and target REPOSITORIES are the same; only the branches are different"
   alt="Image showing that the source and target repositories are the same; only the branches are different"
 />
+
+above: notice the source and target REPOSITORIES are the same; only the branches
+are different.
 
 That's it! Click "create PR," and you'll have a healthy PR. Don't forget to
 tell your reviewer where to look, and to close the PR you accidentally made

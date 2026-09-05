@@ -123,8 +123,12 @@ visible user interface!
 <img
   src="/static/vimWindowExample.webp"
   alt="image showing vim with multiple windows"
-  caption="This is a real world example! I opened up 3 windows to figure out how to use this image component: this post's source is on the left, the import I needed to copy is on the top right, and the previous usage of this component is in the bottom right."
 />
+
+above: this is a real world example! I opened up 3 windows to figure out how to
+use this image component: this post's source is on the left, the import I needed
+to copy is on the top right, and the previous usage of this component is in the
+bottom right.
 
 Windows are key for any productivity in vim, and you'll certainly interact with
 them a lot. You'll see some [shortcuts in my vim
