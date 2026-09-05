@@ -11,3 +11,10 @@ public/post/%.html: markdown/%.md
 
 serve: content
 	python3 -m http.server --directory public
+
+release: content
+	docker buildx build -t tmp .
+
+run-container: release
+	docker rm -f tmp
+	docker run --name tmp -p 80:80 -d tmp
