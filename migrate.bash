@@ -45,6 +45,12 @@ rewrite_image_component() {
     mv tmp "$file"
 }
 
+rename_mdx_to_md() {
+    file="$1"
+    markdown_name="$(echo "$file" | sed 's/\.mdx$/\.md/g')"
+    mv "$file" "$markdown_name"
+}
+
 main() {
     restore
     nuke_trash
@@ -55,6 +61,7 @@ main() {
             rip_out_yaml_frontmatter "$file"
             remove_code_sample_component "$file"
             rewrite_image_component "$file"
+            rename_mdx_to_md "$file"
     done
 }
 
