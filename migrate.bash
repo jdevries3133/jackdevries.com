@@ -52,8 +52,20 @@ rename_mdx_to_md() {
     mv "$file" "$markdown_name"
 }
 
+remove_unused_static() {
+    ls public/static > all_static.txt
+    grep -rn 'src=' app/mdx \
+        | sed 's/.*src="\(.*\)".*/\1/g' \
+        | grep '^\/static' \
+        | sed 's/\/static\///g' \
+        | sort \
+        | grep -vFf - all_static.txt \
+        | xargs -I{} rm public/static/{}
+}
+
 main() {
     restore
+    remove_unused_static
     nuke_trash
 
     cd markdown
