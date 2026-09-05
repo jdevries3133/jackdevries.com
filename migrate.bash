@@ -18,9 +18,29 @@ nuke_trash() {
     ls public | grep -v static | xargs rm -rf
 }
 
+rip_out_yaml_frontmatter() {
+    file="$1"
+    file_basename="$(echo "$file" | sed 's/\.mdx$//g')"
+    cat "$file" \
+        | sed '/^---$/,/^---$/!d' \
+        | sed 's/^---$//g' \
+        > "${file_basename}.yml"
+    cat "$file" \
+        | sed '/^---$/,/^---$/d' \
+        > tmp
+    mv tmp "$file"
+}
+
+
 main() {
     restore
     nuke_trash
+
+    cd markdown
+    for file in $(ls *.mdx)
+    do
+            rip_out_yaml_frontmatter "$file"
+    done
 }
 
 main
