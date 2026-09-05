@@ -31,6 +31,11 @@ rip_out_yaml_frontmatter() {
     mv tmp "$file"
 }
 
+remove_code_sample_component() {
+    file="$1"
+    cat "$file" | sed '/CodeSample/d' > tmp
+    mv tmp "$file"
+}
 
 main() {
     restore
@@ -40,6 +45,7 @@ main() {
     for file in $(ls *.mdx)
     do
             rip_out_yaml_frontmatter "$file"
+            remove_code_sample_component "$file"
     done
 }
 
