@@ -1,0 +1,55 @@
+<h1>Cross Compilation from M1 Mac for Rust Projects</h1>
+<p>I had a really hard time Googling for answers to questions about cross
+compilation <em>from</em> an M1 mac, because historically there have been so many
+questions about compiling <strong>from</strong> <code>x86_64</code> <strong>to</strong> <code>arm</code>; mostly in the
+embedded systems space.</p>
+<p>I hope that I've thrown in enough keywords to bring people with the same
+problem as myself here:</p>
+<blockquote>
+<p>I just want to compile my app on my mac and ship it to a Linux box running an
+<code>x86_64</code> architecture and I am struggling.</p>
+</blockquote>
+<h3>Helpful Resources</h3>
+<ul>
+<li><a href="https://burgers.io/cross-compile-rust-from-arm-to-x86-64">Cross-compiling Rust from ARM to x86-64 by Bryan Burgers</a></li>
+<li><a href="https://rust-lang.github.io/rustup/cross-compilation.html">Cross-compilation from the Rust Book</a></li>
+<li><a href="https://doc.rust-lang.org/nightly/rustc/platform-support.html"><code>rustc</code> platform support docs</a></li>
+</ul>
+<p>The first resource, in particular, was most helpful to me, so I reduced it into
+a bash snippet.</p>
+<h3><em>The</em> Snippet</h3>
+<p>This will setup tooling and cross-compile an <code>x86_64</code> executable from your M1
+Mac.</p>
+<pre><code class="language-bash">#!/bin/bash
+
+# musl is a version of the C standard library that can be statically linked
+rustup target add x86_64-unknown-linux-musl
+
+# see https://github.com/messense/homebrew-macos-cross-toolchains
+brew tap messense/macos-cross-toolchains
+brew install x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu
+echo &quot;export CC_x86_64_unknown_linux_gnu=x86_64-unknown-linux-gnu-gcc
+export CXX_x86_64_unknown_linux_gnu=x86_64-unknown-linux-gnu-g++
+export AR_x86_64_unknown_linux_gnu=x86_64-unknown-linux-gnu-ar
+export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-unknown-linux-gnu-gcc&quot; \
+    &gt;&gt; ~/.bashrc
+source ~/.bashrc
+
+echo &quot;[target.x86_64-unknown-linux-musl]
+linker = \&quot;x86_64-unknown-linux-gnu-gcc\&quot;&quot; &gt;&gt; ~/.cargo/config
+
+# ---
+# tooling setup is done
+cargo build --release --target x86_64-unknown-linux-musl
+</code></pre>
+<div className="text-sm italic rounded p-1 m-1 bg-primary-100">
+<p className="my-0 py-0 text-center">caveats</p>
+<ul>
+<li>you need to <a href="https://brew.sh/">install homebrew</a></li>
+<li>this assumes the use of bash and appends to <code>~/.bashrc</code></li>
+<li>this is assumed to be run in the root of a Rust project, because it ends with
+cross-compiling a rust project</li>
+</ul>
+</div>
+<p>You now have a working cross-compiled executable in
+<code>target/x86_64-unknown-linux-musl</code> send it off to live its best x86_64 life!</p>

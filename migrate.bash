@@ -12,7 +12,7 @@ nuke_trash() {
     mv app/mdx/*.mdx markdown
     ls -a | grep -v migrate.bash \
         | grep -v '^\.\.\?$' \
-        | grep -v \.git \
+        | grep -v "^\.git$" \
         | grep -v markdown \
         | grep -v public \
         | xargs rm -rf

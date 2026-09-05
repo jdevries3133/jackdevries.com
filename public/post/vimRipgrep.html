@@ -1,0 +1,126 @@
+<h1>Vim <code>:grep</code> on Steriods with Ripgrep</h1>
+<p>This one goes out to the vim users who like to keep it simple. Not really
+myself -- my neovim config is currently sitting pretty at 8187 lines -- but
+smarter people who seek to avoid that level of suffering might like this trick.</p>
+<h2>TL;DR</h2>
+<p>Ripgrep is like grep, but it is git-aware. It skips searching the <code>.git</code>
+folder, and anything listed in <code>.gitignore</code> files. It is really easy to tell
+vim to use ripgrep instead of grep for the <code>:grep</code> command. Just <a href="https://github.com/BurntSushi/ripgrep#installation">install
+ripgrep</a>, and add this to
+your <code>.vimrc</code>:</p>
+<pre><code class="language-vim">set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+set grepformat=%f:%l:%c:%m,%f:%l:%m
+
+&quot; Or, if you want to keep your config portable and only want these settings
+&quot; wherever ripgrep is installed
+
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+    set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
+</code></pre>
+<h2>Background</h2>
+<p>If you're a vim minimalist, you're probably already acquainted with <code>:grep</code>.</p>
+<pre><code class="language-vim">:grep -rn &quot;whatever&quot; directory
+</code></pre>
+<p>Behind the scenes, this uses the <code>grep</code> installation on your machine; it's an
+interface for calling external grep-like programs. There's also <code>:vimgrep</code>,
+which is built into vim and uses a sed-like syntax familiar to vim users. It's
+much slower albeit more tightly integrated as a native component of vim.
+Otherwise <code>:grep</code> and <code>:vimgrep</code> basically do the same things.</p>
+<p>The problem is that <code>:grep</code> or <code>:vimgrep</code> will also search through
+<code>node_modules</code>, <code>venv</code>, and all the other generated not-source-code crap that
+tends to accumulate in source trees.</p>
+<h2>ripgrep</h2>
+<p>With neovim, I've been using ripgrep +
+<a href="https://github.com/nvim-telescope/telescope.nvim">Telescope</a> to solve this
+problem for a while.
+<a href="https://github.com/jdevries3133/vim_config/blob/main/vimrc">Ripgrep</a> is itself
+a spiritual successor to <a href="https://beyondgrep.com/why-ack/">ack</a>. Both of these
+tools attempt to be &quot;grep for developers.&quot; They are natively aware of version
+control. They skip searching through the <code>.git</code> folder, and also acknowledge
+all the <code>.gitignore</code> files in a file tree. They have other niceties, but those
+two are the most important, because they &quot;just work&quot; for searching through
+source trees, with no false positives!</p>
+<p>Install ripgrep and try it out on a version-controlled source tree; the
+installed program is called &quot;rg.&quot; You might use it like this in a react
+project to find imports of the react package.</p>
+<pre><code class="language-bash">rg &quot;from ['\&quot;]react['\&quot;]&quot;
+</code></pre>
+<p>If you grep for the same pattern, you'll be overwhelmed with results from
+<code>node_modules</code>. You can always add a <code>| grep -v node_modules</code>, but that search
+will be slow. With ripgrep, only files in your source tree appear in the
+results. <code>node_modules</code> is excluded by default since it's in the <code>.gitignore</code>!</p>
+<h2>ripgrep + vim</h2>
+<p>Now, to integrate with vim, it's really simple, just add this snippet to your
+<code>.vimrc</code>:</p>
+<pre><code class="language-vim">set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+set grepformat=%f:%l:%c:%m,%f:%l:%m
+</code></pre>
+<p><a href="https://github.com/BurntSushi/ripgrep/issues/425#issuecomment-381446152">source</a></p>
+<p>&quot;<code>grepprg ...</code>&quot; tells vim to use ripgrep. <code>grepformat ...</code> changes the output
+format so that vim can parse it into its
+<a href="https://vimhelp.org/quickfix.txt.html#quickfix.txt">quickfixlist</a>.</p>
+<h3>Sidenote: The Quickfixlist</h3>
+<p>Again, <code>:grep</code> now only searches through version control and, <em>critically</em>, it
+will populate vim's quickfixlist with the results of a search. The quickfixlist
+is fantastic. Its name comes from the fact that it was originally conceived as
+an integration between vim and make / Makefiles. Basically, it would parse the
+error output from your C compiler and give you a &quot;quick fix list;&quot; the list of
+locations you needed to quickly go to in your editor to make fixes! Since the
+<code>:q</code> namespace is cluttered, most quickfix commands start with <code>:c</code> instead:</p>
+<ul>
+<li><code>:cn[ext]</code>: jump to next item</li>
+<li><code>:cp[revious]</code>: jump to the previous item</li>
+<li><code>:copen</code>: open the quickfix list in a draw at the bottom</li>
+</ul>
+<p><a href="https://freshman.tech/vim-quickfix-and-location-list/">Freshman.tech</a> has a
+detailed write-up on the quickfixlist that goes into some more detail.</p>
+<h3>Bringing it all together: ripgrep, quickfixlist, and <code>:cdo</code></h3>
+<p>The most significant superpower, though, comes from combining ripgrep, the
+quickfixlist, and vim's substitution power. Let's imagine that we're renaming a
+source file. We want to similarly update every import statement in a codebase.</p>
+<h4>Step 1: Find every import statement of that source file</h4>
+<pre><code class="language-vim">:grep &quot;from ['\&quot;].*myOldSourceFile['\&quot;]&quot;
+</code></pre>
+<p>This matches every possibility for javascript or typescript ES6 imports:</p>
+<ul>
+<li><code>from '/path/to/myOldSourceFile'</code></li>
+<li><code>from &quot;../../relative/path/to/myOldSourceFile&quot;</code></li>
+</ul>
+<p>It doesn't match <code>'myOldSourceFile.tsx'</code>; although a sane codebase would have
+that. Your mileage may vary - no two javascript codebases are the same.</p>
+<h4>Step 2: Craft the substitution command</h4>
+<p>The expressions we need for this problem is super simple:</p>
+<pre><code class="language-vim">s/myOldSourceFile/myNewSourceFile
+</code></pre>
+<p>I also have a post / video if you're interested in <a href="./vimRegex">regexes in
+Vim</a>.</p>
+<h4>Step 3: Use <code>:cdo</code></h4>
+<p>This is where the magic happens! With <code>:cdo</code>, you can apply a command to every
+line in your quickfixlist!</p>
+<pre><code class="language-vim">:grep &quot;from ['\&quot;].*myOldSourceFile['\&quot;]&quot;
+:cdo s/myOldSourceFile/myNewSourceFile
+</code></pre>
+<p>You may have just successfully updated hundreds of files in about 1 minute of
+effort. Or, you may have caused a catastrophe! That's what <code>git checkout -- .</code>
+is for. It goes without saying that doing this sort of thing with many unstaged
+changes on your working tree is a recipe for disaster!</p>
+<h4>Other Useful Patterns</h4>
+<p>I have used this for updating dozens of webpack configurations in one fell
+swoop:</p>
+<pre><code class="language-vim">:grep &quot;entry: .*&quot;
+:cdo s/entry: \(.*\)/\0\r  newConfiguration: {\r    someValue: true\r},
+</code></pre>
+<p>In this case, I'm using some existing part of the file as an anchor, and just
+adding more stuff. In vim, you can use <code>\r</code> in the replace side of a
+substitution pattern to add a newline.</p>
+<h3>Why Not <code>:vimgrep</code></h3>
+<p>Considering the 3-step use case I shared before, I believe that <code>:vimgrep</code> is
+somewhat suited towards doing all of that in a single step. I honestly haven't
+used it much, and I don't doubt that it could be better. Let me know if that's
+the case! I do feel like when I'm doing sweeping find and replace operations, I
+want to do it in a 2-step process anyway. First, I <code>:grep</code> to populate the
+quickfixlist, and I might iterate on the grep pattern until I have exactly the
+search results that I want. Then, only when I'm confident that the results are
+correct, I'll start working on the transformation with <code>:cdo</code>.</p>
