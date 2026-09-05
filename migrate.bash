@@ -10,7 +10,8 @@ restore() {
 nuke_trash() {
     mkdir -p markdown
     mv app/mdx/*.mdx markdown
-    ls | grep -v migrate.bash \
+    ls -a | grep -v migrate.bash \
+        | grep -v '^\.\.\?$' \
         | grep -v \.git \
         | grep -v markdown \
         | grep -v public \
