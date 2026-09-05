@@ -1,0 +1,126 @@
+---
+title: GitHub Workflow Tips for Beginners
+description: |
+  Take control of GitHub! Here's an interactive guide on common gitastrophes
+  and how to solve them. Includes making PRs against the wrong repo, having
+  more commits on your PR than you expect, and fixing extra files sneaking
+  into your commits.
+created: 2023-04-12
+thumbnail: /static/git.webp
+---
+
+import { HeroText, HeroBg } from '../components/heroText.tsx';
+import { Image } from '../components/image.tsx';
+
+# GitHub Workflow Tips for Beginners
+
+<p className="italic text-mineral-500 text-sm"
+>Note: I have a series of posts about git. For an intermediate workshop, see
+[git some help.](./gitHelp)</p>
+
+## Overview
+
+This guide is mainly written with my [Code the
+Dream (CTD)](https://codethedream.org/) mentoring students in mind, but many bootcamp
+students or new open source contributors can benefit from these tips. First,
+when I say "GitHub Workflow," I mean the typical lifecycle of changes whereby
+an individual contributor gets their code into a git repository:
+
+1. Make a local clone of the repo
+2. Make a feature branch
+3. Make a GitHub pull request, where you're requesting to merge your feature
+   commits with the main branch of the repository
+4. Code review occurs in the pull request
+5. Your code is merged 🎉
+
+Note that this is the workflow at CTD is a bit different than your typical open
+source workflow. Specifically, CTD students are branching from their own remote
+repository, and simply applying self-imposed discipline to not commit to the
+`main` branch, as a way of rehearsing the way that the process works in most
+companies.
+
+Meanwhile in open-source repos, you cannot generally create a branch on the
+real project repository. Instead, you make a branch of your own remote copy of
+the project repo, then request to pull your changes into the upstream
+repository from your remote repository. This is a more complex setup, and
+_not_ how it generally works at companies, which also why CTD does not teach
+this workflow! However, if you are a CTD student and you've ever accidentally
+made a pull request to merge your code into the CTD official clone of the
+`node_express_course`, this is why! GitHub is optimized for the open source
+contributing workflow, where your personal fork is the "landing zone" for
+changes ultimately bound for the repository you forked from. If you click the
+default "create PR" button, it will target CTD by default!
+
+# Common Mistakes
+
+OK, so what are these common mistakes we're going to address?
+
+- Making a PR against the wrong repo
+- Too many commits on a PR
+- Commits include `node_modules` or other stuff we don't want
+
+## Mistake 1: PR is Targeting the Wrong Repo
+
+Let's say it loud for those in the back:
+
+<HeroBg>
+  <HeroText>
+    You should be able to click &apos;merge&apos; on your Pull Request&#33;&#33;&#33;
+  </HeroText>
+</HeroBg>
+
+And if you can't something's gone wrong!
+
+For an example "bad" pull request, check out my own;
+[#79](https://github.com/Code-the-Dream-School/node-express-course/pull/79).
+Technically, nothing is wrong here -- my intention is to actually contribute to
+code the dream, not to merge this code into the main branch of my own
+repository. But if you did this, it would be a mistake. You want your pull
+requests to target _your own main branch!_
+
+You cannot change this PR to target the correct branch. You will need to close
+this PR and create a new one. First, let's create a new one; you can jump to
+the "week N" branch on your local repository by clicking on the blue chip on
+from the bad PR:
+
+<Image
+  src="/static/ctdGitTips1.webp"
+  caption="Click the red box to jump to the branch with your changes"
+  alt="Image showing where to click. As of writing, the screen reader should say 'jdevries3133/node-express-course:wk_3_review_notes' for the element you need to click on"
+/>
+
+Next, you'll find yourself on the page for your branch. This is the branch you
+made with your changes (typically "`week2`" or similar). It looks like this,
+and you should click contribute -> "Open Pull Request" to go onto the next
+step:
+
+<Image
+  src="/static/ctdGitTips2.webp"
+  caption='Click the red box, then "Open Pull Request"'
+  alt='Look for a popup menu element with the text "Contribute"'
+/>
+
+Finally, we come upon the page where you done goofed the first time. There are
+4 dropdowns, and you originally made a mistake by accepting the default value
+in the first one. By default, it'll prompt you to make a PR against Code
+The Dream's upstream repository, but you want to click that left-most dropdown,
+and change it to be your own repository!
+
+<Image
+  src="/static/ctdGitTips3.webp"
+  caption="Notice the source and target REPOSITORIES are the same; only the branches are different"
+  alt="Image showing that the source and target repositories are the same; only the branches are different"
+/>
+
+That's it! Click "create PR," and you'll have a healthy PR. Don't forget to
+tell your reviewer where to look, and to close the PR you accidentally made
+against the Code the Dream repo!
+
+
+## Too Many Commits on a PR
+
+WIP - will revisit!
+
+## Commits Include Stuff we Don't Want
+
+WIP - will revisit!

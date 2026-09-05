@@ -1,6 +1,0 @@
-
-title: Vim `:grep` on Steriods with Ripgrep
-description: Supercharge vim's `:grep` with just one shell command and two extra lines in your vimrc, and never accidentally grep for a node_modules file again!
-thumbnail: /static/vimLogo.webp 
-created: 2022-10-14
-

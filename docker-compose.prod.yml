@@ -1,0 +1,8 @@
+services:
+  web:
+    restart: always
+    environment:
+      EMAIL_SENDING_ENABLED: 1
+  db:
+    volumes:
+      - /opt/pg_data:/var/lib/postgresql/data

@@ -1,0 +1,20 @@
+services:
+  web:
+    image: ${IMAGE}
+    build: .
+    ports:
+      # http server
+      - "8000:8000"
+    links:
+      - db
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/app
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET}
+      EMAIL_PASSWORD: ${JACK_WEBSITE_EMAIL_PASSWORD}
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: app
