@@ -5,7 +5,9 @@ clean:
 
 public/post/%.html: markdown/%.md
 	mkdir -p public/post
-	cmark --unsafe $< > $@
+	cp before_post.html $@
+	cmark --unsafe $< >> $@
+	cat after_post.html >> $@
 
 serve: content
 	python3 -m http.server --directory public
