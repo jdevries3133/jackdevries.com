@@ -16,7 +16,7 @@ nuke_trash() {
         | grep -v markdown \
         | grep -v public \
         | xargs rm -rf
-    ls public | grep -v static | xargs rm -rf
+    ls public | grep -v static | xargs -I{} rm -rf public/{}
 }
 
 rip_out_yaml_frontmatter() {
