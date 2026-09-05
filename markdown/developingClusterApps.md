@@ -5,7 +5,9 @@
 <img
   src="/static/cluster.webp"
   alt="my cluster, three desktop computers side by side"
-  caption="My humble Kubernetes cluster at home" />
+  />
+
+above: My humble Kubernetes cluster at home.
 
 Building a Kubernetes cluster for hobby projects and web apps has been a great
 experience for learning. When things are working well, the development
