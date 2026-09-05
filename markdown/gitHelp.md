@@ -215,10 +215,9 @@ You can also interactively add changes inside VSCode.
   <img
     src="/static/vsCodeGitInteractiveStaging.webp"
     alt="Screenshot of interactive staging in VSCode"
+    caption="Interactive staging in VS Code"
   />
 </a>
-
-above: Interactive staging in VS Code.
 
 ### Interactive Staging with Vim
 
@@ -234,10 +233,9 @@ exactly what is staged versus unstaged.
   <img
     src="/static/interactiveStagingVim.webp"
     alt="Screenshot of interactive staging in Vim"
+    caption="Interactive staging in Vim"
   />
 </a>
-
-above: Interactive staging in Vim.
 
 ## Cherry-Picking
 
@@ -393,10 +391,9 @@ merge commits throughout.
   <img
     src="/static/crissCrossHistory.webp"
     alt="A visual of criss-crossing git histories."
+    caption={<p>Result of{" "} <code>git log --oneline --decorate --graph</code></p>}
   />
 </a>
-
-above: result of `git log --oneline --decorate --graph`.
 
 What's amazing if you hadn't realized this before is that git keeps track of
 these many concurrent versions of history forever. Although `git log` makes it
@@ -548,16 +545,14 @@ of software that truly used to exist.
 <img
   src="/static/visualizeMergingViaMerge.webp"
   alt="Visualization of combining branches with git merge"
+  caption="Visualization of combining branches with git merge"
 />
-
-above: visualization of combining branches with git merge.
 
 <img
   src="/static/visualizeMergingWithRebase.webp"
   alt="Visualization of combining branches with git rebase"
+  caption="Visualization of combining branches with git rebase"
 />
-
-above: visualization of combining branches with git rebase.
 
 Despite this haphazard treatment of history, I do prefer to use re-basing to
 keep my development branches in sync with the main branch while I am developing

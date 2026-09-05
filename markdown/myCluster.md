@@ -1,4 +1,6 @@
 
+import { MyRepos } from "../components/myRepos";
+
 # DIY Kubernetes from Hardware to IaC
 
 All of my websites (including this one) run on a Kubernetes cluster in my home.
@@ -75,9 +77,7 @@ about the development experience, which makes all this work worth it. See
 <img
   src="/static/cluster.webp"
   alt="my cluster, three desktop computers side by side"
-/>
-
-above: my humble Kubernetes cluster.
+  caption="My humble Kubernetes cluster" />
 
 First of all, you're going to need to start with some hardware. I built my
 cluster from three old & unused desktops, but the specific hardware doesn't
@@ -268,6 +268,7 @@ how few people actually read these posts.
 <img
   alt="my sad cloudflare usage, with only 50 visitors per day"
   src="/static/cloudflareUsage.webp"
+  caption="sad_pikachu.jpeg"
 />
 
 ## The Rest of the Owl
@@ -313,39 +314,4 @@ All of my sites are open source and also deployed to my cluster, so check them
 out for examples of how you can use the cluster to host websites. The
 possibilities are really endless.
 
-<table>
-  <thead>
-    <tr>
-      <td>Site</td>
-      <td>GitHub Repo</td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>
-        <a href="https://songmakergallery.com/">Song Maker Gallery</a>
-      </td>
-      <td>
-        <a href="https://github.com/jdevries3133/song_maker_gallery">
-          jdevries3133/song_maker_gallery
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="https://classfast.app">Fast Grader for Google Classroom</a>
-      </td>
-      <td>
-        <a href="https://github.com/jdevries3133/fast_grader">
-          jdevries3133/fast_grader
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td>This website</td>
-      <td>
-        <a href="https://jackdevries.com">jdevries3133/jackdevries.com</a>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<MyRepos />
