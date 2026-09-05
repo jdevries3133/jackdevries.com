@@ -1,0 +1,19 @@
+
+# Regex in Vim
+
+I'm not a regex genius, but with `:incsearch`, you can incrementally craft
+quite complex regular expressions with immediate visual feedback. Here's an
+example; the source file might look familiar if you read my ripgrep post 😁. A
+video is worth 1000 words in this case.
+
+<iframe
+  width="100%"
+  height="315"
+  src="https://www.youtube.com/embed/ulEE0ddTKkA"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+  allowfullscreen></iframe>
+
+[Regexr](https://regexr.com/) is another popular website for working on regular
+expressions, but vim + `:incsearch` is much faster for vim users.

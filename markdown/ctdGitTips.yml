@@ -1,0 +1,10 @@
+
+title: GitHub Workflow Tips for Beginners
+description: |
+  Take control of GitHub! Here's an interactive guide on common gitastrophes
+  and how to solve them. Includes making PRs against the wrong repo, having
+  more commits on your PR than you expect, and fixing extra files sneaking
+  into your commits.
+created: 2023-04-12
+thumbnail: /static/git.webp
+

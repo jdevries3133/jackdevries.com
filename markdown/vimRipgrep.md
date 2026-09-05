@@ -1,0 +1,174 @@
+
+# Vim `:grep` on Steriods with Ripgrep
+
+This one goes out to the vim users who like to keep it simple. Not really
+myself -- my neovim config is currently sitting pretty at 8187 lines -- but
+smarter people who seek to avoid that level of suffering might like this trick.
+
+## TL;DR
+
+Ripgrep is like grep, but it is git-aware. It skips searching the `.git`
+folder, and anything listed in `.gitignore` files. It is really easy to tell
+vim to use ripgrep instead of grep for the `:grep` command. Just [install
+ripgrep](https://github.com/BurntSushi/ripgrep#installation), and add this to
+your `.vimrc`:
+
+```vim
+set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+set grepformat=%f:%l:%c:%m,%f:%l:%m
+
+" Or, if you want to keep your config portable and only want these settings
+" wherever ripgrep is installed
+
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+    set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
+```
+
+## Background
+
+If you're a vim minimalist, you're probably already acquainted with `:grep`.
+
+```vim
+:grep -rn "whatever" directory
+```
+
+Behind the scenes, this uses the `grep` installation on your machine; it's an
+interface for calling external grep-like programs. There's also `:vimgrep`,
+which is built into vim and uses a sed-like syntax familiar to vim users. It's
+much slower albeit more tightly integrated as a native component of vim.
+Otherwise `:grep` and `:vimgrep` basically do the same things.
+
+The problem is that `:grep` or `:vimgrep` will also search through
+`node_modules`, `venv`, and all the other generated not-source-code crap that
+tends to accumulate in source trees.
+
+## ripgrep
+
+With neovim, I've been using ripgrep +
+[Telescope](https://github.com/nvim-telescope/telescope.nvim) to solve this
+problem for a while.
+[Ripgrep](https://github.com/jdevries3133/vim_config/blob/main/vimrc) is itself
+a spiritual successor to [ack](https://beyondgrep.com/why-ack/). Both of these
+tools attempt to be "grep for developers." They are natively aware of version
+control. They skip searching through the `.git` folder, and also acknowledge
+all the `.gitignore` files in a file tree. They have other niceties, but those
+two are the most important, because they "just work" for searching through
+source trees, with no false positives!
+
+Install ripgrep and try it out on a version-controlled source tree; the
+installed program is called "rg." You might use it like this in a react
+project to find imports of the react package.
+
+```bash
+rg "from ['\"]react['\"]"
+```
+
+If you grep for the same pattern, you'll be overwhelmed with results from
+`node_modules`. You can always add a `| grep -v node_modules`, but that search
+will be slow. With ripgrep, only files in your source tree appear in the
+results. `node_modules` is excluded by default since it's in the `.gitignore`!
+
+## ripgrep + vim
+
+Now, to integrate with vim, it's really simple, just add this snippet to your
+`.vimrc`:
+
+```vim
+set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+set grepformat=%f:%l:%c:%m,%f:%l:%m
+```
+
+[source](https://github.com/BurntSushi/ripgrep/issues/425#issuecomment-381446152)
+
+"`grepprg ...`" tells vim to use ripgrep. `grepformat ...` changes the output
+format so that vim can parse it into its
+[quickfixlist](https://vimhelp.org/quickfix.txt.html#quickfix.txt).
+
+### Sidenote: The Quickfixlist
+
+Again, `:grep` now only searches through version control and, *critically*, it
+will populate vim's quickfixlist with the results of a search. The quickfixlist
+is fantastic. Its name comes from the fact that it was originally conceived as
+an integration between vim and make / Makefiles. Basically, it would parse the
+error output from your C compiler and give you a "quick fix list;" the list of
+locations you needed to quickly go to in your editor to make fixes! Since the
+`:q` namespace is cluttered, most quickfix commands start with `:c` instead:
+
+- `:cn[ext]`: jump to next item
+- `:cp[revious]`: jump to the previous item
+- `:copen`: open the quickfix list in a draw at the bottom
+
+[Freshman.tech](https://freshman.tech/vim-quickfix-and-location-list/) has a
+detailed write-up on the quickfixlist that goes into some more detail.
+
+### Bringing it all together: ripgrep, quickfixlist, and `:cdo`
+
+The most significant superpower, though, comes from combining ripgrep, the
+quickfixlist, and vim's substitution power. Let's imagine that we're renaming a
+source file. We want to similarly update every import statement in a codebase.
+
+#### Step 1: Find every import statement of that source file
+
+ ```vim
+ :grep "from ['\"].*myOldSourceFile['\"]"
+ ```
+This matches every possibility for javascript or typescript ES6 imports:
+
+- `from '/path/to/myOldSourceFile'`
+- `from "../../relative/path/to/myOldSourceFile"`
+
+It doesn't match `'myOldSourceFile.tsx'`; although a sane codebase would have
+that. Your mileage may vary - no two javascript codebases are the same.
+
+#### Step 2: Craft the substitution command
+
+The expressions we need for this problem is super simple:
+
+```vim
+s/myOldSourceFile/myNewSourceFile
+```
+
+I also have a post / video if you're interested in [regexes in
+Vim](./vimRegex).
+
+#### Step 3: Use `:cdo`
+
+This is where the magic happens! With `:cdo`, you can apply a command to every
+line in your quickfixlist!
+
+```vim
+:grep "from ['\"].*myOldSourceFile['\"]"
+:cdo s/myOldSourceFile/myNewSourceFile
+```
+
+You may have just successfully updated hundreds of files in about 1 minute of
+effort. Or, you may have caused a catastrophe! That's what `git checkout -- .`
+is for. It goes without saying that doing this sort of thing with many unstaged
+changes on your working tree is a recipe for disaster!
+
+#### Other Useful Patterns
+
+I have used this for updating dozens of webpack configurations in one fell
+swoop:
+
+```vim
+:grep "entry: .*"
+:cdo s/entry: \(.*\)/\0\r  newConfiguration: {\r    someValue: true\r},
+```
+
+In this case, I'm using some existing part of the file as an anchor, and just
+adding more stuff. In vim, you can use `\r` in the replace side of a
+substitution pattern to add a newline.
+
+### Why Not `:vimgrep`
+
+Considering the 3-step use case I shared before, I believe that `:vimgrep` is
+somewhat suited towards doing all of that in a single step. I honestly haven't
+used it much, and I don't doubt that it could be better. Let me know if that's
+the case! I do feel like when I'm doing sweeping find and replace operations, I
+want to do it in a 2-step process anyway. First, I `:grep` to populate the
+quickfixlist, and I might iterate on the grep pattern until I have exactly the
+search results that I want. Then, only when I'm confident that the results are
+correct, I'll start working on the transformation with `:cdo`.

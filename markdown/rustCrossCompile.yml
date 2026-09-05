@@ -1,0 +1,7 @@
+
+title: Cross Compilation from M1 Mac to x86_64 for Rust Projects
+description: |
+  Cross compile Rust from M1 Mac to x86_64, ard64, or other target
+  platforms
+created: 2022-06-10
+

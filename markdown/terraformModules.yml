@@ -1,0 +1,8 @@
+
+title: Summarize Infrastructure with Terraform Modules
+description: |
+    Terraform modules are a great tool for factoring repetitive IaC
+    out of projects and providing a clear interface for app developers to
+    consume infrastructure.
+created: 2022-05-27
+
