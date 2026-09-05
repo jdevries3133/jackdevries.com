@@ -37,6 +37,14 @@ remove_code_sample_component() {
     mv tmp "$file"
 }
 
+rewrite_image_component() {
+    file="$1"
+    cat "$file" \
+        | sed 's/\<Image/\<img/g; /^import.*Image.*/d ' \
+        > tmp
+    mv tmp "$file"
+}
+
 main() {
     restore
     nuke_trash
@@ -46,6 +54,7 @@ main() {
     do
             rip_out_yaml_frontmatter "$file"
             remove_code_sample_component "$file"
+            rewrite_image_component "$file"
     done
 }
 
