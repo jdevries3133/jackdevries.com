@@ -74,7 +74,7 @@ $(MARKER_DIR)/container: Dockerfile $(MARKER_DIR)/last-git-rev
 		--tag  $(CONTAINER) .
 	$(call touch-marker,container)
 
-release-deps = track-git content $(MARKER_DIR)/container
+release-deps = track-git clean-content content $(MARKER_DIR)/container
 release-deps += apply-terraform
 .PHONY: release 
 release: $(release-deps)
@@ -89,9 +89,13 @@ dbg-container: track-git content
 apply-terraform: $(MARKER_DIR)/terraform-init
 	terraform apply
 
+.PHONY: clean-content
+clean-content:
+	rm -rf public/post
+
 .PHONY: clean
-clean:
-	rm -rf public/post .terraform $(MARKER_DIR)
+clean: clean-content
+	rm -rf .terraform $(MARKER_DIR)
 
 .PHONY: help
 help:
