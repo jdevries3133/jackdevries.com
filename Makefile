@@ -24,6 +24,15 @@ define assert-port-free
 	} || true;
 endef
 
+.PHONY: track-git
+track-git:
+	mkdir -p $(MARKER_DIR)
+	current="$$(git rev-parse HEAD)"; \
+	last=$$(cat $(MARKER_DIR)/last-git-rev 2> /dev/null || echo init); \
+	if [ "$$current" != "$$last" ] ; then \
+		echo "$$current" > "$(MARKER_DIR)/last-git-rev"; \
+	fi
+
 .PHONY: check-cmark
 check-cmark:
 	$(call check-bin,cmark)
@@ -53,15 +62,15 @@ start: content check-python
 	$(call assert-port-free,$(PORT))
 	python3 -m http.server --directory public
 
-$(MARKER_DIR)/container: Dockerfile
+$(MARKER_DIR)/container: Dockerfile $(MARKER_DIR)/last-git-rev
 	docker buildx build --load --push --platform linux/amd64,linux/arm64 --tag  $(CONTAINER) .
 	$(call touch-marker,container)
 
 .PHONY: release
-release: content $(MARKER_DIR)/container apply-terraform
+release: track-git content $(MARKER_DIR)/container apply-terraform
 
 .PHONY: dbg-container
-dbg-container: content
+dbg-container: track-git content
 	docker rm -f $(CONTAINER_NAME)
 	$(call assert-port-free,$(PORT))
 	docker run --rm --name $(CONTAINER_NAME) -p $(PORT):80 -d $(CONTAINER)
@@ -72,7 +81,7 @@ apply-terraform: $(MARKER_DIR)/terraform-init
 
 .PHONY: clean
 clean:
-	rm -rf public/post .terraform
+	rm -rf public/post .terraform $(MARKER_DIR)
 
 .PHONY: help
 help:
