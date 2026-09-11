@@ -56,6 +56,8 @@ public/post/%.html: markdown/%.md
 	cp before_post.html $@
 	cmark --unsafe $< >> $@
 	cat after_post.html >> $@
+	commit_date="$$(git log -1 --format=%cd --date=format:%Y%m%d%H%M.%S -- $<)"; \
+	touch -t "$$commit_date" $@;
 
 .PHONY: start
 start: content check-python
