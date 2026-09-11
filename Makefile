@@ -16,13 +16,6 @@ endef
 
 content: $(foreach s,$(MD_STEMS),$(call post-html,$(s)))
 
-define check-bin
-	@which $(1) > /dev/null || { \
-		echo 'fatal: install $(1)' ; \
-		exit 1; \
-	}
-endef
-
 define touch-marker
 	mkdir -p $(MARKER_DIR)
 	touch $(MARKER_DIR)/$(1)
@@ -44,19 +37,15 @@ track-git:
 		echo "$$current" > "$(MARKER_DIR)/last-git-rev"; \
 	fi
 
-.PHONY: check-cmark
-check-cmark:
-	$(call check-bin,cmark)
-	$(call mark,cmark)
-
-.PHONY: check-python
-check-python:
-	$(call check-bin,python3)
-	$(call mark-python)
-
-.PHONY: check-terraform
-check-terraform:
-	$(call check-bin,terraform)
+check_bin_rules = cmark python terraform
+define check_bin_rule_template
+check-$(1):
+	@which $(1) > /dev/null || { \
+		echo 'fatal: install $(1)' ; \
+		exit 1; \
+	}
+endef
+$(foreach bin,$(check_bin_rules),$(eval $(call check_bin_rule_template,$(bin))))
 
 $(MARKER_DIR)/terraform-init: .terraform.lock.hcl
 	terraform init -reconfigure
