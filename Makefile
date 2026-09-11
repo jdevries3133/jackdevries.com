@@ -7,7 +7,7 @@ PORT := 8000
 MD_STEMS := $(basename $(notdir $(wildcard markdown/*.md)))
 
 # Reads the `created: YYYY-MM-DD` date out of markdown/<stem>.yml
-post-date = $(strip $(shell sed -n 's/^created: *//p' markdown/$1.yml | tr -d '\r'))
+post-date = $(strip $(shell yq -r '.created' markdown/$1.yml | tr -d '\r'))
 
 # Build target: date-prefixed HTML file
 define post-html
@@ -37,7 +37,7 @@ track-git:
 		echo "$$current" > "$(MARKER_DIR)/last-git-rev"; \
 	fi
 
-check_bin_rules = cmark python terraform
+check_bin_rules = cmark python terraform yq
 define check_bin_rule_template
 check-$(1):
 	@which $(1) > /dev/null || { \
