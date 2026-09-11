@@ -3,7 +3,18 @@ CONTAINER := jdevries3133/website:$(SHA)
 CONTAINER_NAME := jdv-website
 MARKER_DIR := .make-markers
 PORT := 8000
-content: $(patsubst markdown/%.md,public/post/%.html,$(wildcard markdown/*.md))
+
+MD_STEMS := $(basename $(notdir $(wildcard markdown/*.md)))
+
+# Reads the `created: YYYY-MM-DD` date out of markdown/<stem>.yml
+post-date = $(strip $(shell sed -n 's/^created: *//p' markdown/$1.yml | tr -d '\r'))
+
+# Build target: date-prefixed HTML file
+define post-html
+public/post/$(call post-date,$(1))-$(1).html
+endef
+
+content: $(foreach s,$(MD_STEMS),$(call post-html,$(s)))
 
 define check-bin
 	@which $(1) > /dev/null || { \
@@ -51,11 +62,15 @@ $(MARKER_DIR)/terraform-init: .terraform.lock.hcl
 	terraform init -reconfigure
 	$(call touch-marker,terraform-init)
 
-public/post/%.html: markdown/%.md
-	mkdir -p public/post
-	cp before_post.html $@
-	cmark --unsafe $< >> $@
-	cat after_post.html >> $@
+define POST_RULE
+$(call post-html,$(1)): markdown/$(1).md
+	@mkdir -p public/post
+	cp before_post.html $$@
+	cmark --unsafe $$< >> $$@
+	cat after_post.html >> $$@
+endef
+
+$(foreach s,$(MD_STEMS),$(eval $(call POST_RULE,$(s))))
 
 .PHONY: start
 start: content check-python
