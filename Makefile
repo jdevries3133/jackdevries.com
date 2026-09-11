@@ -67,11 +67,17 @@ start: content check-python
 	python3 -m http.server --directory public
 
 $(MARKER_DIR)/container: Dockerfile $(MARKER_DIR)/last-git-rev
-	docker buildx build --load --push --platform linux/amd64,linux/arm64 --tag  $(CONTAINER) .
+	docker buildx build \
+		--load \
+		--push \
+		--platform linux/amd64,linux/arm64 \
+		--tag  $(CONTAINER) .
 	$(call touch-marker,container)
 
-.PHONY: release
-release: track-git content $(MARKER_DIR)/container apply-terraform
+release-deps = track-git content $(MARKER_DIR)/container
+release-deps += apply-terraform
+.PHONY: release 
+release: $(release-deps)
 
 .PHONY: dbg-container
 dbg-container: track-git content
