@@ -90,6 +90,23 @@ dbg-container: track-git content
 apply-terraform: $(MARKER_DIR)/terraform-init
 	terraform apply
 
+today := $(shell date "+%Y-%m-%d")
+
+.PHONY: new-post
+new-post:
+ifndef name
+	@echo "Fatal: provide name='New Post Name'"
+	@exit 1
+endif
+	@slug="$$(<<< "$(name)" tr '[:upper:]' '[:lower:]' | sed 's/ \{1,\}/-/g')"; \
+	if [ -z "$$slug" ] ; then \
+		echo "generated slug is empty; this is probably a bug in this make rule."; \
+		exit 1; \
+	fi; \
+	echo "# $(name)" > "markdown/$${slug}.md"; \
+	echo "title: $(name)" > "markdown/$${slug}.yml"; \
+	echo "created: $(today)" >> "markdown/$${slug}.yml"; \
+
 .PHONY: clean-content
 clean-content:
 	rm -rf public/post
@@ -104,6 +121,7 @@ help:
 	@echo
 	@echo "    clean: delete build output"
 	@echo "    content: convert markdown into html"
+	@echo "    new-post: create a new post (pass name='New Post Name')"
 	@echo "    dbg-container: run the prod container locally"
 	@echo "    release: build, push, and terraform apply"
 	@echo "    start: run the development server once; no live-reloading"
