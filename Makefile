@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 SHA := $(shell git rev-parse HEAD)
 CONTAINER := jdevries3133/website:$(SHA)
 CONTAINER_NAME := jdv-website
